@@ -943,8 +943,8 @@ ${info('Examples:')}
   }
 
   case 'init': {
-    const tasksDir = args[0] || './tasks';
-    const notesDir = args[1] || './notes';
+    const tasksDir = args[1] || '.local-work/tasks';
+    const notesDir = args[2] || '.local-work/notes';
 
     console.log(`${info('Initializing local-work in current project...')}\n`);
 
@@ -985,8 +985,8 @@ ${info('Usage:')}
   task open                                     Open tasks directory
 
 ${info('Examples:')}
-  task init                                     # Use default ./tasks and ./notes
-  task init ./my-tasks ./my-notes               # Custom directories
+  task init                                     # Use default .local-work/tasks and .local-work/notes
+  task init ./my-tasks ./my-notes               # Custom directories (relative to project root)
   task new "Implement login" -p high -a jonhvmp
   task start TASK-001
   task done TASK-001

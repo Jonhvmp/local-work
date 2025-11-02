@@ -280,8 +280,8 @@ function initLocalConfig(options = {}) {
     return false;
   }
 
-  const tasksDir = options.tasksDir || './tasks';
-  const notesDir = options.notesDir || './notes';
+  const tasksDir = options.tasksDir || '.local-work/tasks';
+  const notesDir = options.notesDir || '.local-work/notes';
 
   const localConfig = {
     version: '2.0.0',
