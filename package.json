@@ -1,6 +1,6 @@
 {
   "name": "local-work",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Professional CLI tools for task and note management - boost your development productivity with organized tasks, daily notes, and meeting logs",
   "main": "cli/task.js",
   "bin": {
