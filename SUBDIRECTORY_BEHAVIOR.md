@@ -33,6 +33,7 @@ task init
 ```
 
 **Behavior:**
+
 1. Checks if config already exists above (prevents duplicates)
 2. Detects project root by markers:
    - `.git` (Git repository)
@@ -70,6 +71,7 @@ note daily                  # Works!
 ```
 
 **Behavior:**
+
 1. Searches for `.local-work/config.json` up the directory tree
 2. Finds config at project root
 3. Uses project configuration
@@ -213,28 +215,31 @@ task init
 
 ## Comparison with Git
 
-| Aspect | Git | local-work |
-|--------|-----|------------|
-| Root detection | Searches for `.git/` | Searches multiple markers |
-| Init in subdir | Creates in current dir | Creates at detected root |
-| Commands in subdir | ✓ Works | ✓ Works |
-| Duplicate prevention | May allow nested | Blocks duplicates |
-| Override | `git init` always creates | `--here` to force |
+| Aspect               | Git                       | local-work                |
+| -------------------- | ------------------------- | ------------------------- |
+| Root detection       | Searches for `.git/`      | Searches multiple markers |
+| Init in subdir       | Creates in current dir    | Creates at detected root  |
+| Commands in subdir   | ✓ Works                   | ✓ Works                   |
+| Duplicate prevention | May allow nested          | Blocks duplicates         |
+| Override             | `git init` always creates | `--here` to force         |
 
 ## Tips
 
 1. **Version Control**: Add `.local-work/` to Git to share config with team
+
    ```bash
    git add .local-work/
    ```
 
 2. **Privacy**: Add `tasks/` and `notes/` to `.gitignore` to keep them private
+
    ```bash
    echo "tasks/" >> .gitignore
    echo "notes/" >> .gitignore
    ```
 
 3. **Multiple Projects**: Use global workspaces or local configs per project
+
    ```bash
    # Global config (workspace)
    task workspace add project1 ~/projects/app1

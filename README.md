@@ -13,6 +13,7 @@
 `local-work` is a lightweight, powerful CLI toolkit designed for developers who value productivity and organization. Manage tasks with auto-incrementing IDs, track time, maintain daily notes, document technical decisions, and organize meeting notes—all from your terminal.
 
 **Key Benefits:**
+
 - **Zero Configuration**: Works out of the box with sensible defaults
 - **Project-Aware**: Automatically detects project root (like Git)
 - **Cross-Platform**: Native support for Linux, macOS, and Windows
@@ -22,6 +23,7 @@
 ## Features
 
 ### Task Management
+
 - Auto-increment task IDs (`TASK-001`, `TASK-002`, etc.)
 - Status workflow: `backlog` → `active` → `completed` → `archived`
 - Priority levels: `low`, `medium`, `high`
@@ -33,6 +35,7 @@
 - Editor integration for detailed editing
 
 ### Note Management
+
 - Daily notes with automatic date-based naming (`YYYY-MM-DD.md`)
 - Meeting notes with agenda and action items
 - Technical Decision Records (ADRs) with auto-numbering
@@ -42,6 +45,7 @@
 - Organized by type for easy navigation
 
 ### Configuration & Flexibility
+
 - **Per-Project Configuration**: Use `.local-work/` directory for project-specific settings
 - **Global Workspaces**: Manage multiple isolated workspaces for different projects
 - **Platform-Native Storage**: Follows XDG on Linux, Library on macOS, AppData on Windows
@@ -147,13 +151,14 @@ task config set editor vim
 
 #### Creation and Status
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `task new <title> [options]` | Create a new task | `task new "Fix login bug" -p high` |
-| `task start <id>` | Move task to active status | `task start TASK-001` |
-| `task done <id>` | Mark task as completed | `task done TASK-001` |
+| Command                      | Description                | Example                            |
+| ---------------------------- | -------------------------- | ---------------------------------- |
+| `task new <title> [options]` | Create a new task          | `task new "Fix login bug" -p high` |
+| `task start <id>`            | Move task to active status | `task start TASK-001`              |
+| `task done <id>`             | Mark task as completed     | `task done TASK-001`               |
 
 **Options for `task new`:**
+
 - `-p, --priority <level>`: Set priority (low, medium, high)
 - `-a, --assignee <name>`: Assign to someone
 - `-e, --estimated <time>`: Set estimated time (e.g., `8h`, `2.5h`, `30m`)
@@ -161,21 +166,22 @@ task config set editor vim
 
 #### Viewing and Editing
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `task list [status]` | List tasks by status | `task list active` |
-| `task view <id>` | View detailed task information | `task view TASK-001` |
-| `task edit <id>` | Edit task in your editor | `task edit TASK-001` |
-| `task search <term>` | Search tasks by keyword | `task search "auth"` |
+| Command              | Description                    | Example              |
+| -------------------- | ------------------------------ | -------------------- |
+| `task list [status]` | List tasks by status           | `task list active`   |
+| `task view <id>`     | View detailed task information | `task view TASK-001` |
+| `task edit <id>`     | Edit task in your editor       | `task edit TASK-001` |
+| `task search <term>` | Search tasks by keyword        | `task search "auth"` |
 
 #### Updating
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `task update <id> <field> <value>` | Update specific field | `task update TASK-001 priority high` |
-| `task archive [days]` | Archive old completed tasks | `task archive 30` |
+| Command                            | Description                 | Example                              |
+| ---------------------------------- | --------------------------- | ------------------------------------ |
+| `task update <id> <field> <value>` | Update specific field       | `task update TASK-001 priority high` |
+| `task archive [days]`              | Archive old completed tasks | `task archive 30`                    |
 
 **Updatable fields:**
+
 - `priority`: low, medium, high
 - `assignee`: Person's name
 - `estimated`: Time estimate (e.g., `8h`)
@@ -184,55 +190,55 @@ task config set editor vim
 
 #### Statistics and Management
 
-| Command | Description |
-|---------|-------------|
-| `task stats` | Show task statistics and analytics |
-| `task open` | Open tasks directory in file manager |
+| Command      | Description                          |
+| ------------ | ------------------------------------ |
+| `task stats` | Show task statistics and analytics   |
+| `task open`  | Open tasks directory in file manager |
 
 #### Project Configuration
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `task init [tasks-dir] [notes-dir]` | Initialize local project config | `task init` |
-| `task config show` | Display current configuration | `task config show` |
-| `task config get <key>` | Get configuration value | `task config get editor` |
-| `task config set <key> <value>` | Set configuration value | `task config set editor vim` |
+| Command                             | Description                     | Example                      |
+| ----------------------------------- | ------------------------------- | ---------------------------- |
+| `task init [tasks-dir] [notes-dir]` | Initialize local project config | `task init`                  |
+| `task config show`                  | Display current configuration   | `task config show`           |
+| `task config get <key>`             | Get configuration value         | `task config get editor`     |
+| `task config set <key> <value>`     | Set configuration value         | `task config set editor vim` |
 
 #### Workspace Management (Global)
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `task workspace list` | List all workspaces | `task workspace list` |
-| `task workspace add <name> <path>` | Add new workspace | `task workspace add client ~/client` |
-| `task workspace switch <name>` | Switch active workspace | `task workspace switch client` |
-| `task workspace remove <name>` | Remove workspace | `task workspace remove old-project` |
+| Command                            | Description             | Example                              |
+| ---------------------------------- | ----------------------- | ------------------------------------ |
+| `task workspace list`              | List all workspaces     | `task workspace list`                |
+| `task workspace add <name> <path>` | Add new workspace       | `task workspace add client ~/client` |
+| `task workspace switch <name>`     | Switch active workspace | `task workspace switch client`       |
+| `task workspace remove <name>`     | Remove workspace        | `task workspace remove old-project`  |
 
 ### Note Commands
 
 #### Creation
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `note daily` | Create daily note | `note daily` |
-| `note meeting <title>` | Create meeting note | `note meeting "Sprint Review"` |
-| `note tech <title>` | Create technical decision (ADR) | `note tech "API versioning"` |
-| `note til <title>` | Create learning note | `note til "Git hooks"` |
+| Command                | Description                     | Example                        |
+| ---------------------- | ------------------------------- | ------------------------------ |
+| `note daily`           | Create daily note               | `note daily`                   |
+| `note meeting <title>` | Create meeting note             | `note meeting "Sprint Review"` |
+| `note tech <title>`    | Create technical decision (ADR) | `note tech "API versioning"`   |
+| `note til <title>`     | Create learning note            | `note til "Git hooks"`         |
 
 #### Viewing and Searching
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `note list [type]` | List notes by type | `note list meetings` |
+| Command              | Description             | Example                  |
+| -------------------- | ----------------------- | ------------------------ |
+| `note list [type]`   | List notes by type      | `note list meetings`     |
 | `note search <term>` | Search notes by content | `note search "database"` |
-| `note open` | Open notes directory | `note open` |
+| `note open`          | Open notes directory    | `note open`              |
 
 #### Project Configuration
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `note init [tasks-dir] [notes-dir]` | Initialize local project config | `note init` |
-| `note config show` | Display current configuration | `note config show` |
-| `note workspace switch <name>` | Switch active workspace | `note workspace switch client` |
+| Command                             | Description                     | Example                        |
+| ----------------------------------- | ------------------------------- | ------------------------------ |
+| `note init [tasks-dir] [notes-dir]` | Initialize local project config | `note init`                    |
+| `note config show`                  | Display current configuration   | `note config show`             |
+| `note workspace switch <name>`      | Switch active workspace         | `note workspace switch client` |
 
 ## Configuration
 
@@ -246,6 +252,7 @@ task init
 ```
 
 This creates:
+
 ```
 .local-work/
   config.json          # Project configuration
@@ -262,6 +269,7 @@ notes/
 ```
 
 **Configuration file (`.local-work/config.json`):**
+
 ```json
 {
   "version": "2.0.0",
@@ -273,6 +281,7 @@ notes/
 ```
 
 **Benefits:**
+
 - Share configuration with your team (commit `.local-work/` to Git)
 - Keep tasks/notes private (add to `.gitignore`)
 - Commands work from any subdirectory
@@ -335,13 +344,16 @@ Each workspace has isolated task/note collections with independent numbering.
 Global workspaces use platform-native directories:
 
 **Linux (XDG Base Directory):**
+
 - Config: `~/.config/local-work/config.json`
 - Data: `~/.local/share/local-work/`
 
 **macOS:**
+
 - Config & Data: `~/Library/Application Support/local-work/`
 
 **Windows:**
+
 - Config: `%APPDATA%\local-work\config.json`
 - Data: `%LOCALAPPDATA%\local-work\`
 
@@ -453,6 +465,7 @@ task list                     # Shows only mobile-app tasks
 ## Best Practices
 
 ### Task Management
+
 - **Start small**: Begin with a few high-priority tasks rather than creating dozens at once
 - **Consistent workflow**: Use `task start` → work → `task update` → `task done` pattern
 - **Time tracking**: Log estimated and actual time to improve future estimates
@@ -460,6 +473,7 @@ task list                     # Shows only mobile-app tasks
 - **Descriptive titles**: Write clear, actionable task titles (e.g., "Fix login form validation" vs "Bug")
 
 ### Note Organization
+
 - **Daily notes**: Use `note daily` every morning to capture plans and thoughts
 - **Meeting notes**: Template includes attendees, agenda, and action items
 - **Technical notes**: Document decisions with context and rationale
@@ -467,6 +481,7 @@ task list                     # Shows only mobile-app tasks
 - **Link tasks**: Reference task IDs in notes for cross-referencing
 
 ### Multi-Project Workflow
+
 - **Per-project config**: Initialize `.local-work/` in each project repository
 - **Commit configs**: Add `.local-work/config.json` to version control
 - **Team alignment**: Share configuration for consistent task numbering
@@ -474,12 +489,14 @@ task list                     # Shows only mobile-app tasks
 - **Separate concerns**: Don't mix personal tasks with project tasks
 
 ### Time Management
+
 - **Realistic estimates**: Start with rough estimates and refine over time
 - **Track actual time**: Update `actual` field to improve estimation accuracy
 - **Review statistics**: Use `task stats` weekly to identify patterns
 - **Break down tasks**: Large tasks (>8h) should be split into smaller ones
 
 ### Backup and Safety
+
 - **Version control**: Commit `.local-work/` directory with project code
 - **Platform backups**: Include platform-specific directories in backup strategy
   - Linux: `~/.local/share/local-work/`
@@ -517,18 +534,18 @@ Override default storage locations:
 
 ## Task Field Reference
 
-| Field | Type | Description | Example |
-|-------|------|-------------|---------|
-| `id` | String | Auto-generated unique ID | `TASK-001`, `TASK-042` |
-| `title` | String | Task description | `"Implement OAuth2"` |
-| `status` | Enum | Current state | `backlog`, `active`, `completed`, `archived` |
-| `priority` | Enum | Importance level | `low`, `medium`, `high` |
-| `created` | ISO Date | Creation timestamp | `2024-01-15T10:30:00Z` |
-| `updated` | ISO Date | Last modification | `2024-01-16T14:22:00Z` |
-| `assignee` | String | Assigned person | `"john.doe"` |
-| `tags` | Array | Category labels | `["backend", "security"]` |
-| `estimated` | String | Time estimate | `"8h"`, `"2.5h"`, `"30m"` |
-| `actual` | String | Time spent | `"6.5h"`, `"45m"` |
+| Field       | Type     | Description              | Example                                      |
+| ----------- | -------- | ------------------------ | -------------------------------------------- |
+| `id`        | String   | Auto-generated unique ID | `TASK-001`, `TASK-042`                       |
+| `title`     | String   | Task description         | `"Implement OAuth2"`                         |
+| `status`    | Enum     | Current state            | `backlog`, `active`, `completed`, `archived` |
+| `priority`  | Enum     | Importance level         | `low`, `medium`, `high`                      |
+| `created`   | ISO Date | Creation timestamp       | `2024-01-15T10:30:00Z`                       |
+| `updated`   | ISO Date | Last modification        | `2024-01-16T14:22:00Z`                       |
+| `assignee`  | String   | Assigned person          | `"john.doe"`                                 |
+| `tags`      | Array    | Category labels          | `["backend", "security"]`                    |
+| `estimated` | String   | Time estimate            | `"8h"`, `"2.5h"`, `"30m"`                    |
+| `actual`    | String   | Time spent               | `"6.5h"`, `"45m"`                            |
 
 ## Time Format
 
@@ -567,6 +584,7 @@ If task IDs don't match between team members:
 ### Commands not working from subdirectory
 
 Ensure you have either:
+
 - A `.local-work/config.json` in your project root, OR
 - An active workspace configured with `task workspace add`
 
@@ -695,6 +713,7 @@ Need help or want to contribute?
 ## Author
 
 **Jonh Alex**
+
 - GitHub: [@jonhvmp](https://github.com/jonhvmp)
 - NPM: [jonhvmp](https://www.npmjs.com/~jonhvmp)
 

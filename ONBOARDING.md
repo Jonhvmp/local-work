@@ -23,13 +23,14 @@ Welcome to **local-work**! This guide will help you get started with managing ta
 
 `local-work` is a lightweight, file-based CLI tool for managing tasks and notes directly from your terminal. It's designed for developers who want to:
 
-* Track tasks with auto-incrementing IDs (TASK-001, TASK-002, etc.)
-* Take structured notes (daily logs, meeting notes, technical decisions)
-* Work seamlessly across multiple projects
-* Collaborate with teams using shared configuration
-* Keep everything organized without leaving the command line
+- Track tasks with auto-incrementing IDs (TASK-001, TASK-002, etc.)
+- Take structured notes (daily logs, meeting notes, technical decisions)
+- Work seamlessly across multiple projects
+- Collaborate with teams using shared configuration
+- Keep everything organized without leaving the command line
 
 **Key Benefits:**
+
 - **No backend required** - Everything stored locally in JSON files
 - **Git-friendly** - Commit tasks and notes with your code
 - **Multi-project support** - Per-project configuration or global workspaces
@@ -81,12 +82,14 @@ task init
 ```
 
 **What happens:**
+
 - Creates `.local-work/` directory at your project root
 - Detects project root automatically (looks for `.git`, `package.json`, etc.)
 - Commands work from any subdirectory within your project
 - Configuration can be committed to version control for team sharing
 
 **Example:**
+
 ```bash
 # Even from a subdirectory...
 cd /path/to/project/src/components
@@ -114,6 +117,7 @@ task workspace switch personal
 ```
 
 **What happens:**
+
 - Stores configuration in platform-specific locations
   - Linux: `~/.config/local-work/` and `~/.local/share/local-work/`
   - macOS: `~/Library/Application Support/local-work/`
@@ -128,6 +132,7 @@ task workspace switch personal
 ### Tasks
 
 Tasks represent work items with:
+
 - **Auto-generated IDs**: `TASK-001`, `TASK-002`, etc.
 - **Status workflow**: `backlog` → `active` → `completed` → `archived`
 - **Priorities**: `low`, `medium`, `high`
@@ -136,6 +141,7 @@ Tasks represent work items with:
 - **Assignees**: Track who's responsible
 
 **Task Lifecycle:**
+
 ```
 Create → Start → Update → Complete → Archive
   (backlog)  (active)  (progress)  (completed)  (archived)
@@ -145,14 +151,15 @@ Create → Start → Update → Complete → Archive
 
 Notes are structured documents for different purposes:
 
-| Type | Command | Use Case |
-|------|---------|----------|
-| **Daily** | `note daily` | Daily logs, plans, reflections |
-| **Meeting** | `note meeting "Title"` | Meeting notes with attendees and action items |
-| **Technical** | `note tech "Title"` | Architecture decisions (ADR) |
-| **Learning** | `note til "Title"` | Today I Learned entries |
+| Type          | Command                | Use Case                                      |
+| ------------- | ---------------------- | --------------------------------------------- |
+| **Daily**     | `note daily`           | Daily logs, plans, reflections                |
+| **Meeting**   | `note meeting "Title"` | Meeting notes with attendees and action items |
+| **Technical** | `note tech "Title"`    | Architecture decisions (ADR)                  |
+| **Learning**  | `note til "Title"`     | Today I Learned entries                       |
 
 **Naming Convention:**
+
 ```
 notes/
   daily/2025-01-15.md
@@ -192,6 +199,7 @@ task new "Set up development environment" -p high -e 4h
 ```
 
 **Options:**
+
 - `-p, --priority`: Set priority (`low`, `medium`, `high`)
 - `-e, --estimated`: Estimate time (`4h`, `2.5h`, `30m`)
 - `-t, --tags`: Add tags (`-t backend,security`)
@@ -507,10 +515,10 @@ task new "Implement login page"   # Creates TASK-002 (correct sequence)
 
 ### Benefits of Shared Configuration
 
-* **Consistent task IDs** - Everyone sees the same task numbers
-* **Team standards** - Shared directory structure and conventions
-* **Easy onboarding** - New team members get instant setup
-* **Git integration** - Configuration versioned with code
+- **Consistent task IDs** - Everyone sees the same task numbers
+- **Team standards** - Shared directory structure and conventions
+- **Easy onboarding** - New team members get instant setup
+- **Git integration** - Configuration versioned with code
 
 ### Keeping Tasks Private
 
@@ -586,10 +594,10 @@ task archive 30  # Archive completed tasks older than 30 days
 
 ### Integrate with Your Workflow
 
-* **Git hooks** - Commit tasks with code changes
-* **Scripts** - Create custom automation scripts
-* **Templates** - Customize note templates in `templates/`
-* **Aliases** - Create shell aliases for common commands:
+- **Git hooks** - Commit tasks with code changes
+- **Scripts** - Create custom automation scripts
+- **Templates** - Customize note templates in `templates/`
+- **Aliases** - Create shell aliases for common commands:
   ```bash
   alias td="task done"
   alias ts="task start"
@@ -599,10 +607,10 @@ task archive 30  # Archive completed tasks older than 30 days
 
 ### Learn More
 
-* **README.md** - Complete command reference and examples
-* **SUBDIRECTORY_BEHAVIOR.md** - Detailed guide on project root detection
-* **GitHub Repository** - [github.com/jonhvmp/local-work](https://github.com/jonhvmp/local-work)
-* **NPM Package** - [npmjs.com/package/local-work](https://www.npmjs.com/package/local-work)
+- **README.md** - Complete command reference and examples
+- **SUBDIRECTORY_BEHAVIOR.md** - Detailed guide on project root detection
+- **GitHub Repository** - [github.com/jonhvmp/local-work](https://github.com/jonhvmp/local-work)
+- **NPM Package** - [npmjs.com/package/local-work](https://www.npmjs.com/package/local-work)
 
 ---
 
@@ -611,6 +619,7 @@ task archive 30  # Archive completed tasks older than 30 days
 ### Troubleshooting
 
 **Commands not working:**
+
 ```bash
 # Check configuration
 task config show
@@ -624,6 +633,7 @@ task --version
 ```
 
 **Task IDs out of sync:**
+
 ```bash
 # Ensure .local-work/config.json is committed
 git status .local-work/
@@ -633,6 +643,7 @@ git pull
 ```
 
 **Permission errors (Linux/macOS):**
+
 ```bash
 # Fix permissions
 chmod -R 755 ~/.local/share/local-work/
@@ -640,9 +651,9 @@ chmod -R 755 ~/.local/share/local-work/
 
 ### Support Channels
 
-* **Report bugs** - [GitHub Issues](https://github.com/jonhvmp/local-work/issues)
-* **Request features** - [GitHub Issues](https://github.com/jonhvmp/local-work/issues)
-* **Documentation** - [README](https://github.com/jonhvmp/local-work#readme)
+- **Report bugs** - [GitHub Issues](https://github.com/jonhvmp/local-work/issues)
+- **Request features** - [GitHub Issues](https://github.com/jonhvmp/local-work/issues)
+- **Documentation** - [README](https://github.com/jonhvmp/local-work#readme)
 
 ### Contributing
 
