@@ -607,43 +607,6 @@ chmod -R 755 ~/.local/share/local-work/
 - No external dependencies
 - Cross-platform: Linux, macOS, Windows
 
-## Changelog
-
-### v2.1.0 (2025-01-XX) - In Development
-
-- Added per-project configuration with `.local-work/` directory
-- Implemented smart project root detection
-- Commands now work from any subdirectory within project
-- Enhanced subdirectory behavior (see SUBDIRECTORY_BEHAVIOR.md)
-- Removed emoji usage, replaced with symbols
-- Refactored documentation for professional NPM presentation
-
-### v2.0.1 (2024-11-15)
-
-- Published to NPM registry
-- Added CI/CD automation with GitHub Actions
-- Improved package.json configuration
-- Enhanced global installation support
-
-### v2.0.0 (2024-11-01)
-
-- Added task edit command with auto-editor opening
-- Added task update command for field updates
-- Added task statistics
-- Added note search functionality
-- Auto-open editor after creating notes
-- Improved error handling and validation
-- Better formatted output with icons
-- Created shared utilities module
-- Added npm package support with global CLI executables
-- Added templates included in package
-- Fixed directory creation issues
-- Fixed task ID parsing
-
-### v1.0.0
-
-- Initial release with basic task and note management
-
 ## Contributing
 
 Contributions are welcome! Here's how you can help:
@@ -651,7 +614,7 @@ Contributions are welcome! Here's how you can help:
 ### Getting Started
 
 1. Fork the repository
-2. Clone your fork: `git clone https://github.com/YOUR_USERNAME/local-work.git`
+2. Clone your fork: `git clone https://github.com/Jonhvmp/local-work.git`
 3. Create a feature branch: `git checkout -b feature/amazing-feature`
 4. Install dependencies: `npm install`
 5. Make your changes
