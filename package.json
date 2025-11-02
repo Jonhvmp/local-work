@@ -1,0 +1,83 @@
+{
+  "name": "local-work",
+  "version": "2.0.0",
+  "description": "Professional CLI tools for task and note management - boost your development productivity with organized tasks, daily notes, and meeting logs",
+  "main": "cli/task.js",
+  "bin": {
+    "task": "./bin/task.js",
+    "note": "./bin/note.js"
+  },
+  "scripts": {
+    "task:new": "node cli/task.js new",
+    "task:start": "node cli/task.js start",
+    "task:done": "node cli/task.js done",
+    "task:list": "node cli/task.js list",
+    "task:view": "node cli/task.js view",
+    "task:edit": "node cli/task.js edit",
+    "task:search": "node cli/task.js search",
+    "task:update": "node cli/task.js update",
+    "task:stats": "node cli/task.js stats",
+    "task:archive": "node cli/task.js archive",
+    "note:daily": "node cli/note.js daily",
+    "note:meeting": "node cli/note.js meeting",
+    "note:tech": "node cli/note.js tech",
+    "note:til": "node cli/note.js til",
+    "note:list": "node cli/note.js list",
+    "note:search": "node cli/note.js search",
+    "lint": "eslint bin/ cli/",
+    "lint:fix": "eslint bin/ cli/ --fix",
+    "format": "prettier --write \"**/*.{js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,json,md}\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [
+    "cli",
+    "task-manager",
+    "tasks",
+    "todo",
+    "notes",
+    "note-taking",
+    "productivity",
+    "gtd",
+    "workflow",
+    "developer-tools",
+    "project-management",
+    "markdown",
+    "daily-notes",
+    "meeting-notes",
+    "technical-notes"
+  ],
+  "files": [
+    "bin/",
+    "cli/",
+    "templates/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonhvmp/local-work.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jonhvmp/local-work/issues"
+  },
+  "homepage": "https://github.com/jonhvmp/local-work#readme",
+  "author": {
+    "name": "Jonh Alex",
+    "email": "jonhvmp@gmail.com",
+    "url": "https://github.com/jonhvmp"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^9.39.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "jest": "^30.2.0",
+    "prettier": "^3.6.2"
+  }
+}

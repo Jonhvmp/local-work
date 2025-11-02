@@ -1,0 +1,43 @@
+# Development files
+*.log
+*.swp
+*.swo
+*~
+.DS_Store
+.vscode/
+.idea/
+
+# Test files
+__tests__/
+*.test.js
+*.spec.js
+coverage/
+.nyc_output/
+
+# Documentation (já está no README)
+IMPLEMENTATION_SUMMARY.md
+QUICK_START.md
+SHELL_ALIASES.md
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+.travis.yml
+.circleci/
+
+# npm
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Examples and demos
+examples/
+demo/
+docs/
+
+# Source maps (se houver)
+*.map
