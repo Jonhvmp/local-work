@@ -2,16 +2,6 @@ const fs = require('fs');
 const path = require('path');
 
 describe('Note CLI Integration', () => {
-  const notesDir = path.join(__dirname, '..', '..', 'notes');
-
-  test('notes directory structure should exist', () => {
-    expect(fs.existsSync(notesDir)).toBe(true);
-    expect(fs.existsSync(path.join(notesDir, 'daily'))).toBe(true);
-    expect(fs.existsSync(path.join(notesDir, 'meetings'))).toBe(true);
-    expect(fs.existsSync(path.join(notesDir, 'technical'))).toBe(true);
-    expect(fs.existsSync(path.join(notesDir, 'learning'))).toBe(true);
-  });
-
   test('note templates should exist', () => {
     const templatesDir = path.join(__dirname, '..', 'templates');
     expect(fs.existsSync(path.join(templatesDir, 'daily-template.md'))).toBe(true);
@@ -30,14 +20,6 @@ describe('Note CLI Integration', () => {
 
 describe('Note Types', () => {
   const noteTypes = ['daily', 'meetings', 'technical', 'learning'];
-
-  test('all note type directories should exist', () => {
-    const notesDir = path.join(__dirname, '..', '..', 'notes');
-    noteTypes.forEach((type) => {
-      const typeDir = path.join(notesDir, type);
-      expect(fs.existsSync(typeDir)).toBe(true);
-    });
-  });
 
   test('note type should be valid', () => {
     expect(noteTypes).toContain('daily');

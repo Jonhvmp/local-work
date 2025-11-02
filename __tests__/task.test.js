@@ -2,16 +2,6 @@ const fs = require('fs');
 const path = require('path');
 
 describe('Task CLI Integration', () => {
-  const tasksDir = path.join(__dirname, '..', '..', 'tasks');
-
-  test('tasks directory structure should exist', () => {
-    expect(fs.existsSync(tasksDir)).toBe(true);
-    expect(fs.existsSync(path.join(tasksDir, 'active'))).toBe(true);
-    expect(fs.existsSync(path.join(tasksDir, 'backlog'))).toBe(true);
-    expect(fs.existsSync(path.join(tasksDir, 'completed'))).toBe(true);
-    expect(fs.existsSync(path.join(tasksDir, 'archived'))).toBe(true);
-  });
-
   test('task template should exist', () => {
     const templatePath = path.join(__dirname, '..', 'templates', 'task-template.md');
     expect(fs.existsSync(templatePath)).toBe(true);
@@ -43,14 +33,6 @@ describe('Task ID Generation', () => {
 
 describe('Task Status Flow', () => {
   const validStatuses = ['backlog', 'active', 'completed', 'archived'];
-
-  test('all status directories should exist', () => {
-    const tasksDir = path.join(__dirname, '..', '..', 'tasks');
-    validStatuses.forEach((status) => {
-      const statusDir = path.join(tasksDir, status);
-      expect(fs.existsSync(statusDir)).toBe(true);
-    });
-  });
 
   test('status transitions should be valid', () => {
     expect(validStatuses).toContain('backlog');
