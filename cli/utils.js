@@ -126,15 +126,15 @@ function getPriorityColor(priority) {
 const icons = {
   task: '◉',
   note: '◈',
-  check: '✓',
-  cross: '✗',
+  check: '*',
+  cross: 'X',
   arrow: '→',
   bullet: '•',
-  star: '★',
-  info: 'ℹ',
-  warning: '⚠',
-  error: '✗',
-  success: '✓',
+  star: '*',
+  info: '>',
+  warning: '!',
+  error: 'X',
+  success: '*',
 };
 
 // Date formatting

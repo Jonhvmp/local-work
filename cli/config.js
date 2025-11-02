@@ -144,6 +144,195 @@ function getConfigPath() {
   return path.join(getConfigDir(), 'config.json');
 }
 
+/**
+ * Find local project configuration file
+ * Searches from current directory up to root for .local-work/config.json
+ * @param {string} [startDir] - Directory to start search from (defaults to cwd)
+ * @returns {string|null} Path to local config file or null if not found
+ */
+function findLocalConfig(startDir = process.cwd()) {
+  let currentDir = path.resolve(startDir);
+  const rootDir = path.parse(currentDir).root;
+
+  while (currentDir !== rootDir) {
+    const configPath = path.join(currentDir, '.local-work', 'config.json');
+    if (fs.existsSync(configPath)) {
+      return configPath;
+    }
+    currentDir = path.dirname(currentDir);
+  }
+
+  // Check root directory
+  const rootConfigPath = path.join(rootDir, '.local-work', 'config.json');
+  if (fs.existsSync(rootConfigPath)) {
+    return rootConfigPath;
+  }
+
+  return null;
+}
+
+/**
+ * Load local project configuration
+ * @param {string} configPath - Path to local config file
+ * @returns {Object|null} Local configuration or null if invalid
+ */
+function loadLocalConfig(configPath) {
+  try {
+    const configData = fs.readFileSync(configPath, 'utf8');
+    return JSON.parse(configData);
+  } catch (error) {
+    console.error(`Error loading local config from ${configPath}:`, error.message);
+    return null;
+  }
+}
+
+/**
+ * Find project root by searching for common project markers
+ * Searches up the directory tree for files like .git, package.json, etc.
+ * @param {string} startDir - Directory to start searching from
+ * @returns {string|null} Project root directory or null if not found
+ */
+function findProjectRoot(startDir) {
+  const projectMarkers = [
+    '.git',
+    'package.json',
+    'Cargo.toml',
+    'go.mod',
+    'pom.xml',
+    'pyproject.toml',
+    'setup.py',
+    'composer.json',
+    'Gemfile',
+  ];
+
+  let currentDir = path.resolve(startDir);
+  const rootDir = path.parse(currentDir).root;
+
+  while (currentDir !== rootDir) {
+    // Check if any project marker exists in current directory
+    for (const marker of projectMarkers) {
+      const markerPath = path.join(currentDir, marker);
+      if (fs.existsSync(markerPath)) {
+        return currentDir;
+      }
+    }
+
+    // Move up one directory
+    const parentDir = path.dirname(currentDir);
+    if (parentDir === currentDir) {
+      break; // Reached root
+    }
+    currentDir = parentDir;
+  }
+
+  return null; // No project marker found
+}
+
+/**
+ * Initialize local project configuration
+ * Creates .local-work/config.json in project root (auto-detected or current directory)
+ * @param {Object} options - Initialization options
+ * @param {string} [options.tasksDir] - Tasks directory path (relative or absolute)
+ * @param {string} [options.notesDir] - Notes directory path (relative or absolute)
+ * @param {boolean} [options.here] - Force creation in current directory (skip auto-detection)
+ * @returns {boolean} Success status
+ */
+function initLocalConfig(options = {}) {
+  const cwd = process.cwd();
+
+  // First, check if a config already exists above
+  const existingConfig = findLocalConfig(cwd);
+  if (existingConfig) {
+    console.error('[X] Local configuration already exists at:', path.dirname(existingConfig));
+    console.error('    Use existing config or remove it before creating a new one');
+    return false;
+  }
+
+  // Determine where to create the config
+  let projectRoot;
+  if (options.here) {
+    // User explicitly wants to create here
+    projectRoot = cwd;
+    console.log('[>] Creating config in current directory (--here flag)');
+  } else {
+    // Try to detect project root
+    const detectedRoot = findProjectRoot(cwd);
+    if (detectedRoot && detectedRoot !== cwd) {
+      projectRoot = detectedRoot;
+      const relativePath = path.relative(cwd, detectedRoot);
+      console.log(`[>] Detected project root at: ${detectedRoot}`);
+      console.log(`    (${relativePath || 'current directory'})`);
+    } else {
+      projectRoot = cwd;
+      if (!detectedRoot) {
+        console.log('[!] No project markers found (.git, package.json, etc.)');
+        console.log('    Creating config in current directory');
+      }
+    }
+  }
+
+  const configDir = path.join(projectRoot, '.local-work');
+  const configPath = path.join(configDir, 'config.json');
+
+  // Double-check if config exists at target location
+  if (fs.existsSync(configPath)) {
+    console.error('[X] Configuration already exists at:', configPath);
+    return false;
+  }
+
+  const tasksDir = options.tasksDir || './tasks';
+  const notesDir = options.notesDir || './notes';
+
+  const localConfig = {
+    version: '2.0.0',
+    projectRoot: projectRoot,
+    tasksDir: tasksDir,
+    notesDir: notesDir,
+    createdAt: new Date().toISOString(),
+  };
+
+  try {
+    // Create .local-work directory
+    if (!fs.existsSync(configDir)) {
+      fs.mkdirSync(configDir, { recursive: true });
+    }
+
+    fs.writeFileSync(configPath, JSON.stringify(localConfig, null, 2), 'utf8');
+
+    // Create directories if they don't exist
+    const absoluteTasksDir = path.resolve(projectRoot, tasksDir);
+    const absoluteNotesDir = path.resolve(projectRoot, notesDir);
+
+    ['backlog', 'active', 'completed', 'archived'].forEach((status) => {
+      const dir = path.join(absoluteTasksDir, status);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+    });
+
+    ['daily', 'meetings', 'technical', 'learning'].forEach((type) => {
+      const dir = path.join(absoluteNotesDir, type);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+    });
+
+    console.log('[+] Local configuration created: .local-work/config.json');
+    console.log(`    Project root: ${projectRoot}`);
+    console.log(`    Tasks: ${tasksDir}`);
+    console.log(`    Notes: ${notesDir}`);
+    console.log('');
+    console.log('[>] Tip: Add .local-work/ to version control to share config with team');
+    console.log('[>] Tip: Add tasks/ and notes/ to .gitignore if you want to keep them private');
+    console.log('[>] Tip: Commands work from any subdirectory within the project');
+
+    return true;
+  } catch (/** @type {any} */ error) {
+    console.error('[X] Error creating local configuration:', error.message);
+    return false;
+  }
+}
+
 // ============================================================================
 // Configuration Management
 // ============================================================================
@@ -455,42 +644,62 @@ function removeWorkspace(name, deleteFiles = false) {
 
 /**
  * Get tasks directory
- * Priority: ENV variable > Active workspace > Default
+ * Priority: Local config > ENV variable > Active workspace > Default
  * @returns {string} Tasks directory path
  */
 function getTasksDir() {
-  // 1. Environment variable override (highest priority)
+  // 1. Local project configuration (highest priority)
+  const localConfigPath = findLocalConfig();
+  if (localConfigPath) {
+    const localConfig = loadLocalConfig(localConfigPath);
+    if (localConfig && localConfig.tasksDir) {
+      const projectRoot = path.dirname(localConfigPath);
+      return path.resolve(projectRoot, localConfig.tasksDir);
+    }
+  }
+
+  // 2. Environment variable override
   if (process.env.LOCAL_WORK_TASKS_DIR) {
     return process.env.LOCAL_WORK_TASKS_DIR;
   }
 
-  // 2. Check for legacy environment variable
+  // 3. Check for legacy environment variable
   if (process.env.LOCAL_WORK_DIR) {
     return path.join(process.env.LOCAL_WORK_DIR, 'tasks');
   }
 
-  // 3. Active workspace
+  // 4. Active workspace
   const workspace = getActiveWorkspace();
   return path.join(workspace.path, 'tasks');
 }
 
 /**
  * Get notes directory
- * Priority: ENV variable > Active workspace > Default
+ * Priority: Local config > ENV variable > Active workspace > Default
  * @returns {string} Notes directory path
  */
 function getNotesDir() {
-  // 1. Environment variable override (highest priority)
+  // 1. Local project configuration (highest priority)
+  const localConfigPath = findLocalConfig();
+  if (localConfigPath) {
+    const localConfig = loadLocalConfig(localConfigPath);
+    if (localConfig && localConfig.notesDir) {
+      const projectRoot = path.dirname(localConfigPath);
+      return path.resolve(projectRoot, localConfig.notesDir);
+    }
+  }
+
+  // 2. Environment variable override
   if (process.env.LOCAL_WORK_NOTES_DIR) {
     return process.env.LOCAL_WORK_NOTES_DIR;
   }
 
-  // 2. Check for legacy environment variable
+  // 3. Check for legacy environment variable
   if (process.env.LOCAL_WORK_DIR) {
     return path.join(process.env.LOCAL_WORK_DIR, 'notes');
   }
 
-  // 3. Active workspace
+  // 4. Active workspace
   const workspace = getActiveWorkspace();
   return path.join(workspace.path, 'notes');
 }
@@ -781,6 +990,10 @@ module.exports = {
   getConfigDir,
   getDataDir,
   getConfigPath,
+  findLocalConfig,
+  loadLocalConfig,
+  initLocalConfig,
+  findProjectRoot,
 
   // Configuration management
   getDefaultConfig,

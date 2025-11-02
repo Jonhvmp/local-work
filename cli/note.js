@@ -595,22 +595,44 @@ ${info('Examples:')}
     break;
   }
 
+  case 'init': {
+    const tasksDir = args[0] || './tasks';
+    const notesDir = args[1] || './notes';
+
+    console.log(`${info('Initializing local-work in current project...')}\n`);
+
+    const success = config.initLocalConfig({
+      tasksDir,
+      notesDir,
+    });
+
+    if (success) {
+      console.log(`\n${bold('✓ Project initialized!')}`);
+      console.log(`\nYou can now use ${bold('task')} and ${bold('note')} commands in this directory.`);
+      console.log(`Tasks and notes will be stored in this project.\n`);
+    }
+    break;
+  }
+
   default:
     console.log(`
 ${bold('Note Management CLI')}
 
 ${info('Usage:')}
-  note daily                    Create daily note for today
-  note meeting <title>          Create meeting note
-  note tech <title>             Create technical decision (ADR)
-  note til <title>              Create learning note (TIL)
-  note list [type]              List notes (all or by type)
-  note search <term>            Search notes by term
-  note workspace <command>      Manage workspaces
-  note config <command>         Manage configuration
-  note open                     Open notes directory
+  note init [tasks-dir] [notes-dir]             Initialize local-work in current project
+  note daily                                    Create daily note for today
+  note meeting <title>                          Create meeting note
+  note tech <title>                             Create technical decision (ADR)
+  note til <title>                              Create learning note (TIL)
+  note list [type]                              List notes (all or by type)
+  note search <term>                            Search notes by term
+  note workspace <command>                      Manage workspaces
+  note config <command>                         Manage configuration
+  note open                                     Open notes directory
 
 ${info('Examples:')}
+  note init                                     # Use default ./tasks and ./notes
+  note init ./my-tasks ./my-notes               # Custom directories
   note daily
   note meeting "Sprint Planning"
   note tech "Migration to Next.js 15"
