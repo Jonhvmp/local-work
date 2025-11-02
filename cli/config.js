@@ -653,7 +653,8 @@ function getTasksDir() {
   if (localConfigPath) {
     const localConfig = loadLocalConfig(localConfigPath);
     if (localConfig && localConfig.tasksDir) {
-      const projectRoot = path.dirname(localConfigPath);
+      // Use projectRoot from config, not dirname of config file
+      const projectRoot = localConfig.projectRoot || path.dirname(path.dirname(localConfigPath));
       return path.resolve(projectRoot, localConfig.tasksDir);
     }
   }
@@ -684,7 +685,8 @@ function getNotesDir() {
   if (localConfigPath) {
     const localConfig = loadLocalConfig(localConfigPath);
     if (localConfig && localConfig.notesDir) {
-      const projectRoot = path.dirname(localConfigPath);
+      // Use projectRoot from config, not dirname of config file
+      const projectRoot = localConfig.projectRoot || path.dirname(path.dirname(localConfigPath));
       return path.resolve(projectRoot, localConfig.notesDir);
     }
   }
