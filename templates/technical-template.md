@@ -1,7 +1,7 @@
 ---
 date: YYYY-MM-DD
 type: technical
-title: "Technical Decision Title"
+title: 'Technical Decision Title'
 tags: []
 related_tasks: []
 status: proposed | accepted | rejected | deprecated

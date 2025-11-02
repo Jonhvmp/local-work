@@ -113,8 +113,9 @@ Content`;
         '---\nid: TASK-002\n---\nContent'
       );
 
-      const files = fs.readdirSync(path.join(TASKS_DIR, 'backlog'))
-        .filter(f => f.startsWith('TASK-'));
+      const files = fs
+        .readdirSync(path.join(TASKS_DIR, 'backlog'))
+        .filter((f) => f.startsWith('TASK-'));
 
       expect(files.length).toBe(2);
     });
@@ -138,11 +139,11 @@ Content`;
 
       const taskPattern = /^TASK-\d+-.+\.md$/;
 
-      validFiles.forEach(file => {
+      validFiles.forEach((file) => {
         expect(file).toMatch(taskPattern);
       });
 
-      invalidFiles.forEach(file => {
+      invalidFiles.forEach((file) => {
         expect(file).not.toMatch(taskPattern);
       });
     });
@@ -163,7 +164,7 @@ Line 4 with SEARCHTERM too`;
         if (line.toLowerCase().includes('searchterm')) {
           results.push({
             line: index + 1,
-            content: line.trim()
+            content: line.trim(),
           });
         }
       });
@@ -179,11 +180,11 @@ Line 4 with SEARCHTERM too`;
       const validPriorities = ['low', 'medium', 'high', 'urgent'];
       const invalidPriorities = ['critical', 'normal', ''];
 
-      validPriorities.forEach(priority => {
+      validPriorities.forEach((priority) => {
         expect(['low', 'medium', 'high', 'urgent']).toContain(priority);
       });
 
-      invalidPriorities.forEach(priority => {
+      invalidPriorities.forEach((priority) => {
         expect(['low', 'medium', 'high', 'urgent']).not.toContain(priority);
       });
     });
@@ -192,11 +193,11 @@ Line 4 with SEARCHTERM too`;
       const validStatuses = ['backlog', 'active', 'completed', 'archived'];
       const invalidStatuses = ['pending', 'in-progress', 'done'];
 
-      validStatuses.forEach(status => {
+      validStatuses.forEach((status) => {
         expect(['backlog', 'active', 'completed', 'archived']).toContain(status);
       });
 
-      invalidStatuses.forEach(status => {
+      invalidStatuses.forEach((status) => {
         expect(['backlog', 'active', 'completed', 'archived']).not.toContain(status);
       });
     });
@@ -205,7 +206,7 @@ Line 4 with SEARCHTERM too`;
       const testCases = [
         { title: 'Test Task', expected: 'test-task' },
         { title: 'Fix Bug #123', expected: 'fix-bug-123' },
-        { title: 'Add Feature: Authentication', expected: 'add-feature-authentication' }
+        { title: 'Add Feature: Authentication', expected: 'add-feature-authentication' },
       ];
 
       testCases.forEach(({ title, expected }) => {
@@ -264,7 +265,7 @@ status: completed
         { status: 'active' },
         { status: 'completed' },
         { status: 'completed' },
-        { status: 'completed' }
+        { status: 'completed' },
       ];
 
       const stats = tasks.reduce((acc, task) => {
@@ -281,7 +282,7 @@ status: completed
       const tasks = [
         { estimated: '2h', actual: '1.5h' },
         { estimated: '4h', actual: '5h' },
-        { estimated: '1h', actual: '1h' }
+        { estimated: '1h', actual: '1h' },
       ];
 
       const parseTime = (timeStr) => {
@@ -301,7 +302,7 @@ status: completed
         { priority: 'medium' },
         { priority: 'high' },
         { priority: 'low' },
-        { priority: 'high' }
+        { priority: 'high' },
       ];
 
       const priorityCount = tasks.reduce((acc, task) => {

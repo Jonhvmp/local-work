@@ -172,16 +172,16 @@ number: ${num}
 
     test('should find highest existing ADR number', () => {
       // Create ADRs with gaps
-      ['0001', '0005', '0010'].forEach(num => {
+      ['0001', '0005', '0010'].forEach((num) => {
         const filePath = path.join(NOTES_DIR, 'technical', `${num}-test.md`);
         fs.writeFileSync(filePath, `---\nnumber: ${num}\n---\nContent`);
       });
 
       const files = fs.readdirSync(path.join(NOTES_DIR, 'technical'));
       const numbers = files
-        .map(f => f.match(/^(\d{4})-/))
-        .filter(m => m)
-        .map(m => parseInt(m[1]));
+        .map((f) => f.match(/^(\d{4})-/))
+        .filter((m) => m)
+        .map((m) => parseInt(m[1]));
 
       const maxNumber = Math.max(...numbers);
       expect(maxNumber).toBe(10);
@@ -253,7 +253,7 @@ How to use this
         },
       ];
 
-      notes.forEach(note => {
+      notes.forEach((note) => {
         fs.writeFileSync(note.path, note.content);
       });
     });
@@ -262,12 +262,12 @@ How to use this
       const searchTerm = 'React';
       const results = [];
 
-      ['daily', 'meetings', 'technical', 'learning'].forEach(type => {
+      ['daily', 'meetings', 'technical', 'learning'].forEach((type) => {
         const dir = path.join(NOTES_DIR, type);
         if (!fs.existsSync(dir)) return;
 
         const files = fs.readdirSync(dir);
-        files.forEach(file => {
+        files.forEach((file) => {
           const filePath = path.join(dir, file);
           const content = fs.readFileSync(filePath, 'utf8');
 
@@ -278,14 +278,14 @@ How to use this
       });
 
       expect(results.length).toBe(2);
-      expect(results.some(r => r.type === 'daily')).toBe(true);
-      expect(results.some(r => r.type === 'meetings')).toBe(true);
+      expect(results.some((r) => r.type === 'daily')).toBe(true);
+      expect(results.some((r) => r.type === 'meetings')).toBe(true);
     });
 
     test('should handle case-insensitive search', () => {
       const searchTerms = ['react', 'REACT', 'React'];
 
-      searchTerms.forEach(term => {
+      searchTerms.forEach((term) => {
         const found = 'React hooks implementation'.toLowerCase().includes(term.toLowerCase());
         expect(found).toBe(true);
       });
@@ -339,7 +339,7 @@ How to use this
 
     test('should list all notes when no type specified', () => {
       let totalNotes = 0;
-      ['daily', 'meetings', 'technical', 'learning'].forEach(type => {
+      ['daily', 'meetings', 'technical', 'learning'].forEach((type) => {
         const dir = path.join(NOTES_DIR, type);
         if (fs.existsSync(dir)) {
           totalNotes += fs.readdirSync(dir).length;
@@ -354,7 +354,7 @@ How to use this
     test('should validate note type', () => {
       const validTypes = ['daily', 'meeting', 'technical', 'learning'];
 
-      validTypes.forEach(type => {
+      validTypes.forEach((type) => {
         expect(['daily', 'meeting', 'technical', 'learning']).toContain(type);
       });
     });

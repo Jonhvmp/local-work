@@ -7,21 +7,25 @@ The Local Work CLI now includes a comprehensive cross-platform configuration sys
 ## Platform-Specific Storage
 
 ### Linux (XDG Base Directory)
+
 - **Config**: `~/.config/local-work/config.json`
 - **Data**: `~/.local/share/local-work/`
 - **Tasks**: `~/.local/share/local-work/tasks/`
 - **Notes**: `~/.local/share/local-work/notes/`
 
 Environment variable overrides:
+
 - `XDG_CONFIG_HOME` - Custom config directory
 - `XDG_DATA_HOME` - Custom data directory
 
 ### macOS
+
 - **Config & Data**: `~/Library/Application Support/local-work/`
 - **Tasks**: `~/Library/Application Support/local-work/tasks/`
 - **Notes**: `~/Library/Application Support/local-work/notes/`
 
 ### Windows
+
 - **Config**: `%APPDATA%\local-work\config.json`
 - **Data**: `%LOCALAPPDATA%\local-work\`
 - **Tasks**: `%LOCALAPPDATA%\local-work\tasks\`
@@ -68,12 +72,14 @@ Workspaces allow you to maintain separate sets of tasks and notes for different 
 ### Commands
 
 #### List Workspaces
+
 ```bash
 task workspace list
 note workspace list
 ```
 
 Output:
+
 ```
 Workspaces:
 
@@ -87,23 +93,27 @@ Workspaces:
 ```
 
 #### Add Workspace
+
 ```bash
 task workspace add <name> <path> [description]
 ```
 
 Examples:
+
 ```bash
 task workspace add frontend ~/projects/frontend "Frontend project"
 task workspace add backend ~/projects/backend
 ```
 
 #### Switch Workspace
+
 ```bash
 task workspace switch <name>
 note workspace switch <name>
 ```
 
 Example:
+
 ```bash
 task workspace switch frontend
 # ✓ Switched to workspace 'frontend'
@@ -111,11 +121,13 @@ task workspace switch frontend
 ```
 
 #### Remove Workspace
+
 ```bash
 task workspace remove <name> [--delete-files]
 ```
 
 Examples:
+
 ```bash
 # Remove workspace but keep files
 task workspace remove old-project
@@ -127,12 +139,14 @@ task workspace remove old-project --delete-files
 ## Configuration Management
 
 ### View Configuration
+
 ```bash
 task config show
 note config show
 ```
 
 Output:
+
 ```
 Configuration:
 
@@ -153,11 +167,13 @@ Preferences:
 ```
 
 ### Set Preference
+
 ```bash
 task config set <key> <value>
 ```
 
 Examples:
+
 ```bash
 task config set colorOutput false
 task config set autoArchive true
@@ -166,11 +182,13 @@ task config set defaultPriority high
 ```
 
 ### Get Preference
+
 ```bash
 task config get <key>
 ```
 
 Example:
+
 ```bash
 task config get editor
 # vim
@@ -181,6 +199,7 @@ task config get editor
 Override default locations with environment variables:
 
 ### Priority Order
+
 1. **Specific directory** (highest priority)
    - `LOCAL_WORK_TASKS_DIR` - Custom tasks location
    - `LOCAL_WORK_NOTES_DIR` - Custom notes location
@@ -248,19 +267,20 @@ note open   # Opens notes directory
 ```
 
 Platform-specific behavior:
+
 - **Linux**: Uses `xdg-open`
 - **macOS**: Uses `open`
 - **Windows**: Uses `explorer`
 
 ## Preferences Reference
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `colorOutput` | boolean | `true` | Enable colored terminal output |
-| `autoArchive` | boolean | `true` | Automatically archive old tasks |
-| `archiveDays` | number | `30` | Days before tasks are archived |
-| `defaultPriority` | string | `"medium"` | Default priority for new tasks |
-| `defaultTaskStatus` | string | `"backlog"` | Default status for new tasks |
+| Key                 | Type    | Default     | Description                     |
+| ------------------- | ------- | ----------- | ------------------------------- |
+| `colorOutput`       | boolean | `true`      | Enable colored terminal output  |
+| `autoArchive`       | boolean | `true`      | Automatically archive old tasks |
+| `archiveDays`       | number  | `30`        | Days before tasks are archived  |
+| `defaultPriority`   | string  | `"medium"`  | Default priority for new tasks  |
+| `defaultTaskStatus` | string  | `"backlog"` | Default status for new tasks    |
 
 ## Best Practices
 
@@ -394,6 +414,7 @@ cp -r $(task config show | grep "Tasks Dir" | cut -d: -f2) /backup/
 The old version saved files in `<project-root>/tasks/` and `<project-root>/notes/`.
 
 When upgrading:
+
 1. Run any `task` or `note` command
 2. CLI will detect old files and prompt for migration
 3. Choose 'yes' to migrate automatically
@@ -419,6 +440,7 @@ note list
 ## Future Enhancements
 
 Planned features:
+
 - Cloud sync support (Google Drive, Dropbox, OneDrive)
 - Team collaboration features
 - Web interface for browsing tasks/notes
@@ -428,5 +450,6 @@ Planned features:
 ## Support
 
 For issues or questions:
+
 - GitHub: https://github.com/jonhvmp/local-work
 - Issues: https://github.com/jonhvmp/local-work/issues

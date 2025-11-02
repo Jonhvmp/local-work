@@ -1,9 +1,9 @@
 ---
 date: YYYY-MM-DD
 type: learning
-title: "What I Learned"
+title: 'What I Learned'
 tags: []
-source: ""
+source: ''
 ---
 
 # TIL: [Title]

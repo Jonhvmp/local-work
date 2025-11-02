@@ -1,15 +1,8 @@
 module.exports = {
   testEnvironment: 'node',
   coverageDirectory: 'coverage',
-  collectCoverageFrom: [
-    'cli/**/*.js',
-    'bin/**/*.js',
-    '!**/node_modules/**',
-  ],
-  testMatch: [
-    '**/__tests__/**/*.js',
-    '**/?(*.)+(spec|test).js',
-  ],
+  collectCoverageFrom: ['cli/**/*.js', 'bin/**/*.js', '!**/node_modules/**'],
+  testMatch: ['**/__tests__/**/*.js', '**/?(*.)+(spec|test).js'],
   coverageThreshold: {
     // Utils.js maintains high coverage (pure business logic functions)
     './cli/utils.js': {

@@ -27,6 +27,7 @@ npm run task:new "Implementar autenticação com JWT" -p high -a jonhvmp
 ```
 
 Parâmetros:
+
 - `-p`: prioridade (low, medium, high)
 - `-a`: responsável (seu usuário)
 
@@ -97,6 +98,7 @@ npm run task:stats
 ```
 
 Mostra:
+
 - Número de tasks por status
 - Distribuição de prioridades
 - Tempo estimado vs tempo real
@@ -182,12 +184,14 @@ npm run task:archive 60
 ## Dicas Pro 💡
 
 1. **Configure seu editor preferido:**
+
    ```bash
    export EDITOR=code  # VS Code
    export EDITOR=vim   # Vim
    ```
 
 2. **Use aliases no seu .bashrc ou .zshrc:**
+
    ```bash
    alias t='cd ~/path/to/scripts && npm run task:list'
    alias tn='cd ~/path/to/scripts && npm run task:new'
@@ -203,6 +207,7 @@ npm run task:archive 60
    - 🗄️ `task:archive` no fim do mês
 
 4. **Use tags para organizar:**
+
    ```bash
    npm run task:update TASK-001 tags "frontend,bug,urgente"
    ```
@@ -301,18 +306,21 @@ node cli/note.js
 ## Problemas Comuns
 
 **Q: O editor não abre**
+
 ```bash
 # Configure a variável EDITOR
 export EDITOR=nano
 ```
 
 **Q: Cores não aparecem no terminal**
+
 ```bash
 # A maioria dos terminais modernos suporta cores ANSI
 # Se não funcionar, pode ser limitação do seu terminal
 ```
 
 **Q: Como mudar o template das tasks/notes?**
+
 ```bash
 # Edite os arquivos:
 # - cli/task.js (função createTask)

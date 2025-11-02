@@ -13,6 +13,7 @@ Este projeto utiliza GitHub Actions para automação de testes, validação de c
 **Jobs:**
 
 #### Test
+
 - Executa em múltiplas versões do Node.js (14, 16, 18, 20)
 - Instala dependências com cache
 - Executa linter (ESLint)
@@ -21,16 +22,19 @@ Este projeto utiliza GitHub Actions para automação de testes, validação de c
 - Upload de cobertura para Codecov (apenas Node 20)
 
 #### Lint
+
 - Valida formatação com ESLint
 - Verifica formatação com Prettier
 - Executa apenas no Node.js 20
 
 #### Build
+
 - Valida estrutura do pacote npm
 - Verifica arquivos binários executáveis
 - Testa comandos CLI básicos
 
 **Comandos executados:**
+
 ```bash
 npm ci
 npm run lint
@@ -45,6 +49,7 @@ npm pack --dry-run
 **Trigger:** Push de tags no formato `v*.*.*` (exemplo: v2.0.0)
 
 **Processo:**
+
 1. Checkout do código
 2. Setup Node.js 20 com NPM registry
 3. Instalação de dependências
@@ -55,10 +60,12 @@ npm pack --dry-run
 8. Criação de GitHub Release com notas
 
 **Requisitos:**
+
 - Secret `NPM_TOKEN` configurado no repositório
 - Versão no package.json deve corresponder à tag
 
 **Exemplo de publicação:**
+
 ```bash
 # 1. Atualizar versão no package.json
 npm version 2.1.0 --no-git-tag-version
@@ -82,6 +89,7 @@ git push origin v2.1.0
 **Input:** Versão desejada (exemplo: 2.1.0)
 
 **Processo:**
+
 1. Checkout do código com histórico completo
 2. Execução de testes e lint
 3. Atualização da versão no package.json
@@ -91,12 +99,14 @@ git push origin v2.1.0
 7. Criação de GitHub Release com changelog
 
 **Como usar:**
+
 1. Acesse: Actions → Release → Run workflow
 2. Digite a versão (exemplo: 2.1.0)
 3. Clique em "Run workflow"
 4. GitHub Actions criará o release e acionará o workflow de publicação
 
 **Changelog automático:**
+
 - Lista todos os commits desde a última tag
 - Formato: `- commit message (hash)`
 - Incluído automaticamente na release notes
@@ -106,6 +116,7 @@ git push origin v2.1.0
 ### Secrets do GitHub
 
 #### NPM_TOKEN
+
 1. Acesse: https://www.npmjs.com/
 2. Settings → Access Tokens → Generate New Token
 3. Tipo: Automation (para CI/CD)
@@ -117,6 +128,7 @@ git push origin v2.1.0
 ### Codecov (Opcional)
 
 Para cobertura de código:
+
 1. Acesse: https://codecov.io
 2. Conecte o repositório GitHub
 3. O token será automaticamente detectado via GitHub Actions
@@ -150,6 +162,7 @@ Settings → Branches → Add rule → main
 ## Fluxo de Desenvolvimento
 
 ### Feature Development
+
 ```bash
 # 1. Criar branch
 git checkout -b feature/nova-funcionalidade
@@ -171,6 +184,7 @@ git push origin feature/nova-funcionalidade
 ```
 
 ### Release Process
+
 ```bash
 # Opção 1: Manual
 npm version patch  # ou minor/major
@@ -184,6 +198,7 @@ git push origin --tags
 ## Troubleshooting
 
 ### Testes falhando no CI mas passando localmente
+
 ```bash
 # Limpar cache e reinstalar
 rm -rf node_modules package-lock.json
@@ -192,11 +207,13 @@ npm test
 ```
 
 ### Publish falhando
+
 - Verificar se NPM_TOKEN está configurado
 - Verificar se versão no package.json corresponde à tag
 - Verificar se já existe versão publicada no NPM
 
 ### Coverage não aparecendo no Codecov
+
 - Verificar se repositório está conectado no Codecov
 - Verificar se workflow tem permissão de escrita
 - Pode levar alguns minutos para aparecer
@@ -214,16 +231,19 @@ npm test
 ## Monitoramento
 
 ### GitHub Actions
+
 - **URL:** https://github.com/jonhvmp/local-work/actions
 - **Status:** Visualizar status de todos os workflows
 - **Logs:** Acessar logs detalhados de cada execução
 
 ### NPM
+
 - **URL:** https://www.npmjs.com/package/local-work
 - **Downloads:** Estatísticas de downloads
 - **Versions:** Histórico de versões publicadas
 
 ### Codecov
+
 - **URL:** https://codecov.io/gh/jonhvmp/local-work
 - **Coverage:** Cobertura de código ao longo do tempo
 - **Trends:** Tendências de cobertura

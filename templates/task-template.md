@@ -1,6 +1,6 @@
 ---
 id: TASK-XXX
-title: "Task Title"
+title: 'Task Title'
 status: backlog
 priority: medium
 created: YYYY-MM-DD

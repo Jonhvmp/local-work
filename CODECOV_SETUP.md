@@ -37,6 +37,7 @@ O workflow já está configurado corretamente! Verifique que existe esta seção
 ## Passo 4: Fazer um Push para Ativar
 
 Qualquer push para a branch `main` ou `develop` irá:
+
 1. ✅ Executar os testes
 2. ✅ Gerar o relatório de cobertura (`coverage/lcov.info`)
 3. ✅ Fazer upload para o Codecov automaticamente
@@ -44,6 +45,7 @@ Qualquer push para a branch `main` ou `develop` irá:
 ## Passo 5: Verificar no Codecov
 
 Após o workflow executar:
+
 1. Acesse: https://codecov.io/gh/Jonhvmp/local-work
 2. Você verá:
    - 📊 Gráfico de cobertura ao longo do tempo
@@ -71,11 +73,13 @@ O badge já está configurado:
 ### Se o upload falhar:
 
 1. **Verifique o token:**
+
    ```bash
    # No GitHub Actions, você verá erro se o token estiver errado
    ```
 
 2. **Verifique o arquivo de cobertura:**
+
    ```bash
    # Deve existir: coverage/lcov.info
    npm run test:coverage
@@ -97,6 +101,7 @@ O badge já está configurado:
 ## 🎉 Pronto!
 
 Após seguir esses passos, seu repositório terá:
+
 - ✅ Coverage tracking automático
 - ✅ Badge de cobertura no README
 - ✅ Relatórios detalhados no Codecov

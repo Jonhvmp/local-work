@@ -163,6 +163,7 @@ tstat
 ## Aliases Explicados
 
 ### Tasks
+
 - `t` - Listar todas as tasks
 - `ta` - Listar tasks ativas
 - `tb` - Listar backlog
@@ -177,6 +178,7 @@ tstat
 - `tstat` - Statistics (estatísticas)
 
 ### Notes
+
 - `nd` - Daily note
 - `nm` - Meeting note
 - `nt` - Technical/ADR note
@@ -185,6 +187,7 @@ tstat
 - `nf` - Find/search notes
 
 ### Navegação
+
 - `goto-tasks` - Ir para pasta de tasks
 - `goto-notes` - Ir para pasta de notes
 

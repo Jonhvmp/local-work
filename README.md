@@ -14,6 +14,7 @@ Professional CLI tools for task and note management. Boost your development prod
 ## Features ✨
 
 ### Task Management
+
 - ✅ Auto-increment task IDs (TASK-001, TASK-002, etc)
 - ✅ Status tracking (backlog → active → completed → archived)
 - ✅ Priority management (low, medium, high)
@@ -29,6 +30,7 @@ Professional CLI tools for task and note management. Boost your development prod
 - ✅ **Cross-platform configuration** 🆕
 
 ### Note Management
+
 - ✅ Daily notes with date-based naming
 - ✅ Meeting notes with agenda and action items
 - ✅ Technical decisions (ADRs) with auto-numbering
@@ -41,6 +43,7 @@ Professional CLI tools for task and note management. Boost your development prod
 - ✅ **Cross-platform configuration** 🆕
 
 ### Configuration & Workspaces 🆕
+
 - ✅ Platform-specific storage (XDG on Linux, Library on macOS, AppData on Windows)
 - ✅ Multiple isolated workspaces for different projects
 - ✅ Environment variable overrides
@@ -64,6 +67,7 @@ note daily
 ```
 
 The CLI will automatically create configuration files in platform-specific locations:
+
 - **Linux**: `~/.config/local-work/` and `~/.local/share/local-work/`
 - **macOS**: `~/Library/Application Support/local-work/`
 - **Windows**: `%APPDATA%\local-work\` and `%LOCALAPPDATA%\local-work\`
@@ -98,11 +102,13 @@ Now you can use `task` and `note` commands globally.
 ### First Run
 
 1. Install globally:
+
 ```bash
 npm install -g local-work
 ```
 
 2. Run any command to initialize:
+
 ```bash
 task list
 # 🎉 Welcome to local-work CLI!
@@ -112,6 +118,7 @@ task list
 The CLI automatically creates all necessary directories and configuration files.
 
 3. Set your editor (optional):
+
 ```bash
 export EDITOR=code  # or vim, nano, etc
 # Or set permanently in config:
@@ -119,11 +126,13 @@ task config set editor code
 ```
 
 4. Create your first task:
+
 ```bash
 task new "Setup project structure" -p high
 ```
 
 5. Create a daily note:
+
 ```bash
 note daily
 ```
@@ -133,6 +142,7 @@ note daily
 ### Task Commands
 
 **Create a new task:**
+
 ```bash
 # Global installation
 task new "Implement authentication" -p high -a jonhvmp
@@ -143,6 +153,7 @@ npm run task:new "Implement authentication" -p high -a jonhvmp
 ```
 
 **Manage task status:**
+
 ```bash
 # Start working on a task (move to active)
 task start TASK-001
@@ -152,6 +163,7 @@ task done TASK-001
 ```
 
 **View and edit tasks:**
+
 ```bash
 # View detailed task information
 task view TASK-001
@@ -161,6 +173,7 @@ task edit TASK-001
 ```
 
 **Search and list tasks:**
+
 ```bash
 # List all tasks
 task list
@@ -175,6 +188,7 @@ task search "authentication"
 ```
 
 **Update task fields:**
+
 ```bash
 # Update priority
 task update TASK-001 priority high
@@ -191,20 +205,23 @@ task update TASK-001 tags "backend,auth,security"
 ```
 
 **View statistics:**
+
 ```bash
 # Show task statistics
 task stats
 ```
 
 **Archive old tasks:**
-```bash
+
+````bash
 **Archive old tasks:**
 ```bash
 # Archive completed tasks older than 30 days
 task archive
-```
+````
 
 **Workspace management:**
+
 ```bash
 # List all workspaces
 task workspace list
@@ -220,6 +237,7 @@ task workspace remove old-project
 ```
 
 **Configuration management:**
+
 ```bash
 # Show current configuration
 task config show
@@ -233,6 +251,7 @@ task config set autoOpen true
 ```
 
 **Open directory in file manager:**
+
 ```bash
 # Open tasks directory
 task open
@@ -242,8 +261,10 @@ note open
 ```
 
 # Archive completed tasks older than 60 days
+
 task archive 60
-```
+
+````
 
 ### Note Commands
 
@@ -260,9 +281,10 @@ note tech "Migration to Next.js 15"
 
 # Learning note (TIL)
 note til "React Server Components"
-```
+````
 
 **List and search notes:**
+
 ```bash
 # List all recent notes
 note list
@@ -281,39 +303,39 @@ note search "authentication"
 
 ### Global Commands (after `npm install -g`)
 
-| Task Command | Description |
-|-------------|-------------|
-| `task new <title> [options]` | Create new task |
-| `task start <id>` | Move task to active |
-| `task done <id>` | Mark task as completed |
-| `task list [status]` | List tasks (all or by status) |
-| `task view <id>` | View task details |
-| `task edit <id>` | Edit task in editor |
-| `task search <term>` | Search tasks |
-| `task update <id> <field> <value>` | Update task field |
-| `task stats` | Show statistics |
-| `task archive [days]` | Archive old tasks |
-| `task workspace list` | List all workspaces |
-| `task workspace add <name> <path>` | Add new workspace |
-| `task workspace switch <name>` | Switch to workspace |
-| `task workspace remove <name>` | Remove workspace |
-| `task config show` | Show configuration |
-| `task config get <key>` | Get preference value |
-| `task config set <key> <value>` | Set preference value |
-| `task open` | Open tasks directory |
+| Task Command                       | Description                   |
+| ---------------------------------- | ----------------------------- |
+| `task new <title> [options]`       | Create new task               |
+| `task start <id>`                  | Move task to active           |
+| `task done <id>`                   | Mark task as completed        |
+| `task list [status]`               | List tasks (all or by status) |
+| `task view <id>`                   | View task details             |
+| `task edit <id>`                   | Edit task in editor           |
+| `task search <term>`               | Search tasks                  |
+| `task update <id> <field> <value>` | Update task field             |
+| `task stats`                       | Show statistics               |
+| `task archive [days]`              | Archive old tasks             |
+| `task workspace list`              | List all workspaces           |
+| `task workspace add <name> <path>` | Add new workspace             |
+| `task workspace switch <name>`     | Switch to workspace           |
+| `task workspace remove <name>`     | Remove workspace              |
+| `task config show`                 | Show configuration            |
+| `task config get <key>`            | Get preference value          |
+| `task config set <key> <value>`    | Set preference value          |
+| `task open`                        | Open tasks directory          |
 
-| Note Command | Description |
-|-------------|-------------|
-| `note daily` | Create daily note |
-| `note meeting <title>` | Create meeting note |
-| `note tech <title>` | Create technical note (ADR) |
-| `note til <title>` | Create learning note (TIL) |
-| `note list [type]` | List notes (all or by type) |
-| `note search <term>` | Search notes by content |
-| `note workspace list` | List all workspaces |
-| `note workspace switch <name>` | Switch to workspace |
-| `note config show` | Show configuration |
-| `note open` | Open notes directory |
+| Note Command                   | Description                 |
+| ------------------------------ | --------------------------- |
+| `note daily`                   | Create daily note           |
+| `note meeting <title>`         | Create meeting note         |
+| `note tech <title>`            | Create technical note (ADR) |
+| `note til <title>`             | Create learning note (TIL)  |
+| `note list [type]`             | List notes (all or by type) |
+| `note search <term>`           | Search notes by content     |
+| `note workspace list`          | List all workspaces         |
+| `note workspace switch <name>` | Switch to workspace         |
+| `note config show`             | Show configuration          |
+| `note open`                    | Open notes directory        |
 
 ## Configuration & Storage
 
@@ -322,17 +344,20 @@ note search "authentication"
 The CLI automatically stores configuration and data in platform-specific directories following industry standards:
 
 #### Linux (XDG Base Directory Specification)
+
 - **Configuration**: `~/.config/local-work/config.json`
 - **Data**: `~/.local/share/local-work/`
   - Tasks: `~/.local/share/local-work/tasks/`
   - Notes: `~/.local/share/local-work/notes/`
 
 #### macOS
+
 - **Configuration & Data**: `~/Library/Application Support/local-work/`
   - Tasks: `~/Library/Application Support/local-work/tasks/`
   - Notes: `~/Library/Application Support/local-work/notes/`
 
 #### Windows
+
 - **Configuration**: `%APPDATA%\local-work\config.json`
 - **Data**: `%LOCALAPPDATA%\local-work\`
   - Tasks: `%LOCALAPPDATA%\local-work\tasks\`
@@ -378,6 +403,7 @@ task workspace switch default
 ```
 
 Each workspace has its own isolated:
+
 - Task collection (with independent ID numbering)
 - Note collection
 - Directory structure
@@ -447,10 +473,12 @@ npm run note:daily
 ## Environment Variables
 
 ### Editor Configuration
+
 - `EDITOR`: Your preferred text editor (default: nano)
 - `VISUAL`: Alternative editor variable
 
 Set your editor:
+
 ```bash
 export EDITOR=code  # VS Code
 export EDITOR=vim   # Vim
@@ -458,11 +486,13 @@ export EDITOR=nano  # Nano
 ```
 
 Or configure it permanently in the CLI:
+
 ```bash
 task config set editor code
 ```
 
 ### Directory Overrides
+
 - `LOCAL_WORK_DIR`: Override entire workspace directory
 - `LOCAL_WORK_TASKS_DIR`: Override tasks directory only
 - `LOCAL_WORK_NOTES_DIR`: Override notes directory only
@@ -482,6 +512,7 @@ The CLI uses colors to improve readability:
 ## Time Format
 
 Use these formats for time tracking:
+
 - Hours: `2h`, `8h`, `1.5h`
 - Minutes: `30m`, `45m`
 
@@ -501,6 +532,7 @@ Use these formats for time tracking:
 ## Customization
 
 Edit the CLI scripts to customize:
+
 - Template formats (`cli/task.js`, `cli/note.js`)
 - File naming conventions
 - Default values
@@ -520,6 +552,7 @@ Current version: 2.0.0
 ## Changelog
 
 ### v2.0.0 (2025-11-01)
+
 - ✨ Added task edit command with auto-editor opening
 - ✨ Added task update command for field updates
 - ✨ Added task statistics
@@ -534,6 +567,7 @@ Current version: 2.0.0
 - 🐛 Fixed task ID parsing
 
 ### v1.0.0
+
 - Initial release with basic task and note management
 
 ## Contributing
@@ -563,5 +597,7 @@ MIT © [Jonh Alex](https://github.com/jonhvmp)
 ---
 
 Made with ❤️ for developers who love productivity
+
 ```
 - Initial release with basic task and note management
+```

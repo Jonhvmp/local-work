@@ -1,7 +1,7 @@
 ---
 date: YYYY-MM-DD
 type: meeting
-title: "Meeting Title"
+title: 'Meeting Title'
 participants: []
 tags: []
 related_tasks: []

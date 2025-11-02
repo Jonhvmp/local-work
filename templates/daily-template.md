@@ -1,7 +1,7 @@
 ---
 date: YYYY-MM-DD
 type: daily
-title: "Daily Notes"
+title: 'Daily Notes'
 tags: []
 related_tasks: []
 ---

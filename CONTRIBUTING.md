@@ -21,6 +21,7 @@ This project and everyone participating in it is governed by our commitment to p
 
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
+
    ```bash
    git clone https://github.com/jonhvmp/local-work.git
    cd local-work
@@ -34,16 +35,19 @@ This project and everyone participating in it is governed by our commitment to p
 ## Development Setup
 
 1. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 2. **Link the package globally** for testing:
+
    ```bash
    npm link
    ```
 
 3. **Run tests** to verify setup:
+
    ```bash
    npm test
    ```
@@ -66,6 +70,7 @@ This project and everyone participating in it is governed by our commitment to p
 ### Workflow
 
 1. **Create a new branch** from `main`:
+
    ```bash
    git checkout -b feature/your-feature-name
    # or
@@ -75,12 +80,14 @@ This project and everyone participating in it is governed by our commitment to p
 2. **Make your changes** following the coding standards
 
 3. **Test your changes**:
+
    ```bash
    npm test
    npm run lint
    ```
 
 4. **Commit your changes** with a clear message:
+
    ```bash
    git commit -m "feat: add time tracking command"
    # or
@@ -96,6 +103,7 @@ This project and everyone participating in it is governed by our commitment to p
    - `chore:` for maintenance tasks
 
 5. **Push to your fork**:
+
    ```bash
    git push origin your-branch-name
    ```
@@ -170,6 +178,7 @@ npm run test:coverage
 Our project uses a multi-layered testing approach optimized for CLI tools:
 
 #### 1. **Utils Functions (High Coverage)**
+
 - **Target**: 85%+ line coverage
 - **Type**: Pure unit tests
 - **Location**: `__tests__/utils.test.js`
@@ -177,6 +186,7 @@ Our project uses a multi-layered testing approach optimized for CLI tools:
 - Full coverage ensures reliability of color formatting, date parsing, frontmatter handling, etc.
 
 #### 2. **CLI Commands (E2E + Logic Validation)**
+
 - **Type**: Integration and end-to-end tests
 - **Location**:
   - `__tests__/cli.e2e.test.js` - End-to-end command execution

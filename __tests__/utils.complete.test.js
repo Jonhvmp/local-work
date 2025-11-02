@@ -78,9 +78,7 @@ describe('Complete Utils Coverage', () => {
     });
 
     test('formatDate handles multiple days ago', () => {
-      const oldDate = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split('T')[0];
+      const oldDate = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       const result = formatDate(oldDate);
       expect(result).toContain('days ago');
     });
