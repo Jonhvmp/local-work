@@ -608,7 +608,9 @@ ${info('Examples:')}
 
     if (success) {
       console.log(`\n${bold('✓ Project initialized!')}`);
-      console.log(`\nYou can now use ${bold('task')} and ${bold('note')} commands in this directory.`);
+      console.log(
+        `\nYou can now use ${bold('task')} and ${bold('note')} commands in this directory.`
+      );
       console.log(`Tasks and notes will be stored in this project.\n`);
     }
     break;
