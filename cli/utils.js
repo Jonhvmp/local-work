@@ -236,13 +236,22 @@ function getCurrentDateTime() {
 function openInEditor(filePath) {
   const editor = process.env.EDITOR || process.env.VISUAL || 'nano';
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
+    // Check if we have a TTY (interactive terminal)
+    if (!process.stdin.isTTY) {
+      // Not in interactive mode, skip opening editor
+      resolve();
+      return;
+    }
+
     exec(`${editor} "${filePath}"`, (error) => {
       if (error) {
-        reject(error);
-      } else {
-        resolve();
+        // Editor failed, but file was already created successfully
+        // Just log warning and continue
+        console.log(warning(`\n${icons.warning} Could not open editor: ${error.message}`));
+        console.log(dim(`   You can edit the file manually at: ${filePath}\n`));
       }
+      resolve();
     });
   });
 }
