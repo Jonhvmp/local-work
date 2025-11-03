@@ -2,7 +2,7 @@
   <img width="800" height="300" alt="local-work-banner" src="https://github.com/user-attachments/assets/18f059f1-23d6-4f43-9886-cabd84105efc" />
 </div>
 
-# local-work
+# local-work -> Blog: [Local Work - Toolkit for Productive Developers](https://jonhvmp.vercel.app/blog/local-work-the-ultimate-cli-toolkit-for-productive-developers)
 
 [![npm version](https://img.shields.io/npm/v/local-work.svg)](https://www.npmjs.com/package/local-work)
 [![CI Status](https://github.com/jonhvmp/local-work/workflows/CI/badge.svg)](https://github.com/jonhvmp/local-work/actions/workflows/ci.yml)
