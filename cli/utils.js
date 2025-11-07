@@ -250,16 +250,20 @@ function openInEditor(filePath) {
     // 3. Sublime Text (subl)
     // 4. Atom (atom)
     // 5. User's EDITOR/VISUAL environment variable (if terminal editor)
-    // 6. nano (terminal fallback)
+    // 6. nano/notepad (platform-specific fallback)
 
     let editor = '';
 
     // Try to find a GUI editor first (better UX for task/note editing)
-    const guiEditors = ['code', 'code-insiders', 'subl', 'atom', 'gedit', 'kate'];
+    const guiEditors = ['code', 'code-insiders', 'subl', 'atom', 'gedit', 'kate', 'notepad++'];
+
+    // Use 'where' on Windows, 'which' on Unix-like systems
+    const isWindows = process.platform === 'win32';
+    const whichCmd = isWindows ? 'where' : 'which';
 
     for (const cmd of guiEditors) {
       try {
-        execSync(`which ${cmd}`, { stdio: 'ignore' });
+        execSync(`${whichCmd} ${cmd}`, { stdio: 'ignore' });
         editor = cmd;
         break;
       } catch (_e) {
@@ -272,9 +276,9 @@ function openInEditor(filePath) {
       editor = process.env.EDITOR || process.env.VISUAL || '';
     }
 
-    // Final fallback to nano
+    // Final fallback to platform-specific default
     if (!editor) {
-      editor = 'nano';
+      editor = isWindows ? 'notepad' : 'nano';
     }
 
     // Check if editor is a GUI app (code, subl, atom, etc)
@@ -308,6 +312,12 @@ function openInEditor(filePath) {
         /* global setTimeout */
         setTimeout(resolve, 100);
       }
+    } else if (isWindows && (editor === 'notepad' || editor === 'notepad++')) {
+      // For Windows notepad, use start command to open in background
+      const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
+      exec(`start "" "${absolutePath}"`, (_error) => {
+        resolve();
+      });
     } else {
       // For terminal editors, wait for them to close
       exec(`${editor} "${filePath}"`, (_error) => {
