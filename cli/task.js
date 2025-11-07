@@ -59,12 +59,17 @@ const getTasksDir = () => {
 
 // Ensure all directories exist (but skip if command is init)
 const initCheck = cleanArgs[2];
-if (initCheck !== 'init' && initCheck !== undefined && initCheck !== 'help' && initCheck !== '--help') {
+if (
+  initCheck !== 'init' &&
+  initCheck !== undefined &&
+  initCheck !== 'help' &&
+  initCheck !== '--help'
+) {
   const tasksDir = getTasksDir();
   ['active', 'backlog', 'completed', 'archived'].forEach((dir) => {
     ensureDir(path.join(tasksDir, dir));
   });
-}/**
+} /**
  * Get next available task ID
  * Scans all task directories to find the highest ID and returns the next sequential number
  * @returns {string} Next task ID in format "XXX" (e.g., "001", "042")

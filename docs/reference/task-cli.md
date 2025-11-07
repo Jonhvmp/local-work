@@ -31,13 +31,13 @@ task [-g] new <title> [-p <priority>] [-a <assignee>] [--no-edit]
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `<title>` | string | Yes | Task title |
-| `-p <priority>` | string | No | Priority: `low`, `medium`, `high` (default: `medium`) |
-| `-a <assignee>` | string | No | Assign to person |
-| `--no-edit` | flag | No | Skip opening in editor |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter       | Type   | Required | Description                                           |
+| --------------- | ------ | -------- | ----------------------------------------------------- |
+| `<title>`       | string | Yes      | Task title                                            |
+| `-p <priority>` | string | No       | Priority: `low`, `medium`, `high` (default: `medium`) |
+| `-a <assignee>` | string | No       | Assign to person                                      |
+| `--no-edit`     | flag   | No       | Skip opening in editor                                |
+| `-g, --global`  | flag   | No       | Use global workspace                                  |
 
 ### Examples
 
@@ -89,10 +89,10 @@ task [-g] start <task-id>
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `<task-id>` | string | Yes | Task ID (e.g., `TASK-001` or `001`) |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type   | Required | Description                         |
+| -------------- | ------ | -------- | ----------------------------------- |
+| `<task-id>`    | string | Yes      | Task ID (e.g., `TASK-001` or `001`) |
+| `-g, --global` | flag   | No       | Use global workspace                |
 
 ### Examples
 
@@ -124,10 +124,10 @@ task [-g] done <task-id>
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `<task-id>` | string | Yes | Task ID (e.g., `TASK-001` or `001`) |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type   | Required | Description                         |
+| -------------- | ------ | -------- | ----------------------------------- |
+| `<task-id>`    | string | Yes      | Task ID (e.g., `TASK-001` or `001`) |
+| `-g, --global` | flag   | No       | Use global workspace                |
 
 ### Examples
 
@@ -159,10 +159,10 @@ task [-g] list [status]
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `[status]` | string | No | Filter by status: `backlog`, `active`, `completed`, `archived` |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type   | Required | Description                                                    |
+| -------------- | ------ | -------- | -------------------------------------------------------------- |
+| `[status]`     | string | No       | Filter by status: `backlog`, `active`, `completed`, `archived` |
+| `-g, --global` | flag   | No       | Use global workspace                                           |
 
 ### Examples
 
@@ -215,10 +215,10 @@ task [-g] view <task-id>
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `<task-id>` | string | Yes | Task ID (e.g., `TASK-001` or `001`) |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type   | Required | Description                         |
+| -------------- | ------ | -------- | ----------------------------------- |
+| `<task-id>`    | string | Yes      | Task ID (e.g., `TASK-001` or `001`) |
+| `-g, --global` | flag   | No       | Use global workspace                |
 
 ### Examples
 
@@ -271,10 +271,10 @@ task [-g] edit <task-id>
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `<task-id>` | string | Yes | Task ID (e.g., `TASK-001` or `001`) |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type   | Required | Description                         |
+| -------------- | ------ | -------- | ----------------------------------- |
+| `<task-id>`    | string | Yes      | Task ID (e.g., `TASK-001` or `001`) |
+| `-g, --global` | flag   | No       | Use global workspace                |
 
 ### Examples
 
@@ -306,22 +306,22 @@ task [-g] update <task-id> <field> <value>
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `<task-id>` | string | Yes | Task ID (e.g., `TASK-001` or `001`) |
-| `<field>` | string | Yes | Field name (see below) |
-| `<value>` | string | Yes | New value |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type   | Required | Description                         |
+| -------------- | ------ | -------- | ----------------------------------- |
+| `<task-id>`    | string | Yes      | Task ID (e.g., `TASK-001` or `001`) |
+| `<field>`      | string | Yes      | Field name (see below)              |
+| `<value>`      | string | Yes      | New value                           |
+| `-g, --global` | flag   | No       | Use global workspace                |
 
 ### Fields
 
-| Field | Valid Values | Description |
-|-------|--------------|-------------|
-| `priority` | `low`, `medium`, `high` | Task priority level |
-| `assignee` | any string | Person assigned to task |
-| `estimated` | time format | Estimated time (e.g., `2h`, `30m`, `1.5h`) |
-| `actual` | time format | Actual time spent |
-| `tags` | comma-separated | Tags for categorization (no spaces) |
+| Field       | Valid Values            | Description                                |
+| ----------- | ----------------------- | ------------------------------------------ |
+| `priority`  | `low`, `medium`, `high` | Task priority level                        |
+| `assignee`  | any string              | Person assigned to task                    |
+| `estimated` | time format             | Estimated time (e.g., `2h`, `30m`, `1.5h`) |
+| `actual`    | time format             | Actual time spent                          |
+| `tags`      | comma-separated         | Tags for categorization (no spaces)        |
 
 ### Time Format
 
@@ -376,10 +376,10 @@ task [-g] search <term>
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `<term>` | string | Yes | Search term (searches title and content) |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type   | Required | Description                              |
+| -------------- | ------ | -------- | ---------------------------------------- |
+| `<term>`       | string | Yes      | Search term (searches title and content) |
+| `-g, --global` | flag   | No       | Use global workspace                     |
 
 ### Examples
 
@@ -423,9 +423,9 @@ task [-g] stats
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type | Required | Description          |
+| -------------- | ---- | -------- | -------------------- |
+| `-g, --global` | flag | No       | Use global workspace |
 
 ### Examples
 
@@ -473,10 +473,10 @@ task [-g] archive [days]
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `[days]` | number | No | Days threshold (default: 30) |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type   | Required | Description                  |
+| -------------- | ------ | -------- | ---------------------------- |
+| `[days]`       | number | No       | Days threshold (default: 30) |
+| `-g, --global` | flag   | No       | Use global workspace         |
 
 ### Examples
 
@@ -578,9 +578,9 @@ task [-g] open
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `-g, --global` | flag | No | Open global workspace |
+| Parameter      | Type | Required | Description           |
+| -------------- | ---- | -------- | --------------------- |
+| `-g, --global` | flag | No       | Open global workspace |
 
 ### Examples
 
@@ -610,10 +610,10 @@ task init [tasks-dir] [notes-dir]
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `[tasks-dir]` | string | No | Custom tasks directory (default: `.local-work/tasks`) |
-| `[notes-dir]` | string | No | Custom notes directory (default: `.local-work/notes`) |
+| Parameter     | Type   | Required | Description                                           |
+| ------------- | ------ | -------- | ----------------------------------------------------- |
+| `[tasks-dir]` | string | No       | Custom tasks directory (default: `.local-work/tasks`) |
+| `[notes-dir]` | string | No       | Custom notes directory (default: `.local-work/notes`) |
 
 ### Examples
 
@@ -653,9 +653,9 @@ task migrate --from <old-path>
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `--from <path>` | string | Yes | Old tasks directory path |
+| Parameter       | Type   | Required | Description              |
+| --------------- | ------ | -------- | ------------------------ |
+| `--from <path>` | string | Yes      | Old tasks directory path |
 
 ### Examples
 
@@ -692,10 +692,10 @@ Shows complete usage information with all commands, examples, and options.
 
 ## :material-keyboard-return: Exit Codes
 
-| Code | Description |
-|------|-------------|
-| `0` | Success |
-| `1` | Error (invalid arguments, task not found, etc.) |
+| Code | Description                                     |
+| ---- | ----------------------------------------------- |
+| `0`  | Success                                         |
+| `1`  | Error (invalid arguments, task not found, etc.) |
 
 ---
 

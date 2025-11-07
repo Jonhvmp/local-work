@@ -36,11 +36,7 @@ tags:
 
 ## Today's Focus
 
-
-
 ## Notes
-
-
 
 ## Action Items
 
@@ -125,15 +121,9 @@ tags:
 
 ## Agenda
 
-
-
 ## Discussion
 
-
-
 ## Decisions
-
-
 
 ## Action Items
 
@@ -184,11 +174,13 @@ tags:
 ## Discussion
 
 ### Last Sprint Review
+
 - Completed 12/15 stories
 - 2 stories moved to backlog
 - Good velocity overall
 
 ### Next Sprint Goals
+
 - Focus on authentication feature
 - Complete dark mode
 - Start OAuth integration
@@ -243,15 +235,9 @@ tags:
 
 ## Context
 
-
-
 ## Decision
 
-
-
 ## Consequences
-
-
 
 ## Alternatives Considered
 ```
@@ -311,6 +297,7 @@ We need better type safety and developer experience.
 We will migrate our entire codebase to TypeScript.
 
 Migration approach:
+
 1. Start with utility functions and types
 2. Migrate backend services
 3. Migrate frontend components
@@ -340,11 +327,13 @@ Timeline: 3 months
 ### JSDoc
 
 **Pros:**
+
 - No build step
 - Gradual adoption
 - Works with existing tooling
 
 **Cons:**
+
 - Verbose syntax
 - Not enforced at runtime
 - Limited IDE support
@@ -354,10 +343,12 @@ Timeline: 3 months
 ### Flow
 
 **Pros:**
+
 - Similar to TypeScript
 - Good type inference
 
 **Cons:**
+
 - Smaller community
 - Less tooling support
 - Facebook-centric
@@ -406,8 +397,6 @@ tags:
 
 ## What I Learned
 
-
-
 ## Key Takeaways
 
 -
@@ -434,7 +423,7 @@ Example: `2025-11-07-react-server-components.md`
 
 ### Example
 
-```markdown
+````markdown
 ---
 title: React Server Components
 date: 2025-11-07
@@ -452,6 +441,7 @@ tags:
 React Server Components allow components to render on the server, reducing JavaScript bundle size and improving performance.
 
 Key concepts:
+
 - Server Components render once on the server
 - Client Components use 'use client' directive
 - Automatic code splitting
@@ -475,7 +465,7 @@ async function Page() {
 }
 
 // components/Counter.tsx - Client Component
-'use client';
+('use client');
 import { useState } from 'react';
 
 export function Counter() {
@@ -483,6 +473,7 @@ export function Counter() {
   return <button onClick={() => setCount(count + 1)}>{count}</button>;
 }
 ```
+````
 
 ## Resources
 
@@ -495,7 +486,8 @@ export function Counter() {
 - [ ] Try building a blog with Server Components
 - [ ] Compare bundle sizes: Client vs Server Components
 - [ ] Learn about streaming and Suspense integration
-```
+
+````
 
 ---
 
@@ -505,7 +497,7 @@ export function Counter() {
 
 ```bash
 note edit <pattern>
-```
+````
 
 Search by filename or pattern:
 
@@ -741,14 +733,17 @@ Useful for automation or batch creation.
 
 ```markdown
 ## Morning Plan
+
 - Priority tasks
 - Meetings
 
 ## Progress
+
 - What I worked on
 - Blockers encountered
 
 ## Evening Review
+
 - Completed items
 - Tomorrow's priorities
 ```

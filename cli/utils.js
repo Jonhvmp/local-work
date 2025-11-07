@@ -262,7 +262,7 @@ function openInEditor(filePath) {
         execSync(`which ${cmd}`, { stdio: 'ignore' });
         editor = cmd;
         break;
-      } catch (e) {
+      } catch (_e) {
         // Command not found, try next
       }
     }
@@ -294,20 +294,23 @@ function openInEditor(filePath) {
       try {
         const child = spawn(editor, args, {
           detached: true,
-          stdio: 'ignore'
+          stdio: 'ignore',
         });
 
         child.unref();
         resolve();
-      } catch (error) {
+      } catch (_error) {
         // If spawn fails, try with exec as fallback
-        const editorCmd = isVSCode ? `${editor} --reuse-window "${absolutePath}"` : `${editor} "${absolutePath}"`;
+        const editorCmd = isVSCode
+          ? `${editor} --reuse-window "${absolutePath}"`
+          : `${editor} "${absolutePath}"`;
         exec(editorCmd, () => {});
+        /* global setTimeout */
         setTimeout(resolve, 100);
       }
     } else {
       // For terminal editors, wait for them to close
-      exec(`${editor} "${filePath}"`, (error) => {
+      exec(`${editor} "${filePath}"`, (_error) => {
         resolve();
       });
     }

@@ -547,47 +547,47 @@ function updatePreference(key, value) {
 /**
  * Get a specific preference value
  * @param {string} key - Preference key
- * @param {any} defaultValue - Default value if key doesn't exist
+ * @param {any} _defaultValue - Default value if key doesn't exist
  * @returns {any} Preference value
  */
-function getPreference(key, defaultValue = null) {
+function getPreference(key, _defaultValue = null) {
   // ============================================================================
-// Working Directories (v3.0.0 - uses resolveWorkspace)
-// ============================================================================
+  // Working Directories (v3.0.0 - uses resolveWorkspace)
+  // ============================================================================
 
-/**
- * Get tasks directory (simplified for v3.0)
- * Use resolveWorkspace() for proper Git-like behavior
- * @param {boolean} [useGlobal=false] - Force global workspace
- * @returns {string} Tasks directory path
- */
-function getTasksDir(useGlobal = false) {
-  try {
-    const workspace = resolveWorkspace(useGlobal);
-    return workspace.tasksDir;
-  } catch (error) {
-    // Fallback to global if resolution fails
-    const dataDir = getDataDir();
-    return path.join(dataDir, 'tasks');
+  /**
+   * Get tasks directory (simplified for v3.0)
+   * Use resolveWorkspace() for proper Git-like behavior
+   * @param {boolean} [useGlobal=false] - Force global workspace
+   * @returns {string} Tasks directory path
+   */
+  function _getTasksDir(useGlobal = false) {
+    try {
+      const workspace = resolveWorkspace(useGlobal);
+      return workspace.tasksDir;
+    } catch (_error) {
+      // Fallback to global if resolution fails
+      const dataDir = getDataDir();
+      return path.join(dataDir, 'tasks');
+    }
   }
-}
 
-/**
- * Get notes directory (simplified for v3.0)
- * Use resolveWorkspace() for proper Git-like behavior
- * @param {boolean} [useGlobal=false] - Force global workspace
- * @returns {string} Notes directory path
- */
-function getNotesDir(useGlobal = false) {
-  try {
-    const workspace = resolveWorkspace(useGlobal);
-    return workspace.notesDir;
-  } catch (error) {
-    // Fallback to global if resolution fails
-    const dataDir = getDataDir();
-    return path.join(dataDir, 'notes');
+  /**
+   * Get notes directory (simplified for v3.0)
+   * Use resolveWorkspace() for proper Git-like behavior
+   * @param {boolean} [useGlobal=false] - Force global workspace
+   * @returns {string} Notes directory path
+   */
+  function _getNotesDir(useGlobal = false) {
+    try {
+      const workspace = resolveWorkspace(useGlobal);
+      return workspace.notesDir;
+    } catch (_error) {
+      // Fallback to global if resolution fails
+      const dataDir = getDataDir();
+      return path.join(dataDir, 'notes');
+    }
   }
-}
 }
 
 // ============================================================================

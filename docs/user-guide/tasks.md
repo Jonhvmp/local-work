@@ -254,13 +254,13 @@ task update TASK-001 <field> <value>
 
 ### Available Fields
 
-| Field | Description | Example Values |
-|-------|-------------|----------------|
-| `priority` | Task priority | `low`, `medium`, `high` |
-| `assignee` | Person assigned | Any string (e.g., `Jonh`, `sarah`) |
-| `estimated` | Estimated time | `30m`, `1h`, `2h`, `1.5h` |
-| `actual` | Actual time spent | `30m`, `1h`, `2h`, `1.5h` |
-| `tags` | Comma-separated tags | `backend,auth`, `frontend,ui` |
+| Field       | Description          | Example Values                     |
+| ----------- | -------------------- | ---------------------------------- |
+| `priority`  | Task priority        | `low`, `medium`, `high`            |
+| `assignee`  | Person assigned      | Any string (e.g., `Jonh`, `sarah`) |
+| `estimated` | Estimated time       | `30m`, `1h`, `2h`, `1.5h`          |
+| `actual`    | Actual time spent    | `30m`, `1h`, `2h`, `1.5h`          |
+| `tags`      | Comma-separated tags | `backend,auth`, `frontend,ui`      |
 
 ### Update Priority
 

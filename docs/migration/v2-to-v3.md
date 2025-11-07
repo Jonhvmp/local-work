@@ -22,6 +22,7 @@ Guide for migrating from local-work v2.x to v3.0.0.
 ### 1. Directory Structure
 
 **v2.x:**
+
 ```
 ~/local-work/
 ├── tasks/
@@ -31,6 +32,7 @@ Guide for migrating from local-work v2.x to v3.0.0.
 **v3.0.0:**
 
 **Local workspace:**
+
 ```
 /project/.local-work/
 ├── tasks/
@@ -54,6 +56,7 @@ Guide for migrating from local-work v2.x to v3.0.0.
 ### 2. Configuration Location
 
 **v2.x:**
+
 ```
 ~/.local-work-config.json
 ```
@@ -69,6 +72,7 @@ Guide for migrating from local-work v2.x to v3.0.0.
 **v2.x:** All commands used single global directory
 
 **v3.0.0:**
+
 - By default: Uses **local** workspace (`.local-work/` in current project)
 - With `-g` flag: Uses **global** workspace (platform-specific)
 
@@ -109,14 +113,14 @@ task -g new "Personal task"     # Creates in global workspace
 
 ### 6. Command Changes
 
-| v2.x | v3.0.0 | Notes |
-|------|---------|-------|
-| `task create` | `task new` | New command name |
-| `task finish` | `task done` | New command name, alias `complete` |
-| - | `task start` | New: Move task to active |
-| - | `task stats` | New: Display statistics |
-| - | `task archive` | New: Archive old tasks |
-| `note create` | `note daily/meeting/tech/til` | Type-specific commands |
+| v2.x          | v3.0.0                        | Notes                              |
+| ------------- | ----------------------------- | ---------------------------------- |
+| `task create` | `task new`                    | New command name                   |
+| `task finish` | `task done`                   | New command name, alias `complete` |
+| -             | `task start`                  | New: Move task to active           |
+| -             | `task stats`                  | New: Display statistics            |
+| -             | `task archive`                | New: Archive old tasks             |
+| `note create` | `note daily/meeting/tech/til` | Type-specific commands             |
 
 ---
 
@@ -174,6 +178,7 @@ task migrate --from ~/local-work/tasks
 ```
 
 This will:
+
 - Copy tasks to new global location
 - Organize by status (backlog/active/completed)
 - Preserve all metadata
@@ -237,6 +242,7 @@ task config show
 Task files may need frontmatter updates for v3.0.0 features:
 
 **v2.x task:**
+
 ```markdown
 ---
 id: TASK-001
@@ -248,6 +254,7 @@ status: todo
 ```
 
 **v3.0.0 task (enhanced):**
+
 ```markdown
 ---
 id: TASK-001
@@ -326,6 +333,7 @@ done
 If you have automation or scripts using old commands:
 
 **Old script (v2.x):**
+
 ```bash
 #!/bin/bash
 task create "Daily review"
@@ -333,6 +341,7 @@ note create "Today's notes"
 ```
 
 **Updated script (v3.0.0):**
+
 ```bash
 #!/bin/bash
 # Use local workspace

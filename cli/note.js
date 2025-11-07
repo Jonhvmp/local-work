@@ -353,19 +353,20 @@ function findNote(pattern) {
       const files = fs.readdirSync(dirPath);
 
       // Try exact match first
-      let file = files.find(f => f === pattern || f === `${pattern}.md`);
+      let file = files.find((f) => f === pattern || f === `${pattern}.md`);
 
       // Try case-insensitive match
       if (!file) {
-        file = files.find(f =>
-          f.toLowerCase() === pattern.toLowerCase() ||
-          f.toLowerCase() === `${pattern.toLowerCase()}.md`
+        file = files.find(
+          (f) =>
+            f.toLowerCase() === pattern.toLowerCase() ||
+            f.toLowerCase() === `${pattern.toLowerCase()}.md`
         );
       }
 
       // Try partial match
       if (!file) {
-        file = files.find(f => f.toLowerCase().includes(pattern.toLowerCase()));
+        file = files.find((f) => f.toLowerCase().includes(pattern.toLowerCase()));
       }
 
       if (file) {
@@ -524,21 +525,33 @@ switch (command) {
   }
 
   case 'meeting': {
-    const meetingTitle = args.slice(1).filter(arg => arg !== '--no-edit').join(' ') || 'Team Meeting';
+    const meetingTitle =
+      args
+        .slice(1)
+        .filter((arg) => arg !== '--no-edit')
+        .join(' ') || 'Team Meeting';
     createMeetingNote(meetingTitle, !noEdit);
     break;
   }
 
   case 'tech':
   case 'technical': {
-    const techTitle = args.slice(1).filter(arg => arg !== '--no-edit').join(' ') || 'Technical Decision';
+    const techTitle =
+      args
+        .slice(1)
+        .filter((arg) => arg !== '--no-edit')
+        .join(' ') || 'Technical Decision';
     createTechnicalNote(techTitle, !noEdit);
     break;
   }
 
   case 'til':
   case 'learning': {
-    const tilTitle = args.slice(1).filter(arg => arg !== '--no-edit').join(' ') || 'Today I Learned';
+    const tilTitle =
+      args
+        .slice(1)
+        .filter((arg) => arg !== '--no-edit')
+        .join(' ') || 'Today I Learned';
     createLearningNote(tilTitle, !noEdit);
     break;
   }

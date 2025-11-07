@@ -15,7 +15,7 @@ npm --version
 ```
 
 !!! tip "Installing Node.js"
-    If you don't have Node.js installed, download it from [nodejs.org](https://nodejs.org/) or use a version manager like [nvm](https://github.com/nvm-sh/nvm).
+If you don't have Node.js installed, download it from [nodejs.org](https://nodejs.org/) or use a version manager like [nvm](https://github.com/nvm-sh/nvm).
 
 ---
 
@@ -61,7 +61,7 @@ npm uninstall -g local-work
 ```
 
 !!! warning "Data Preservation"
-    Uninstalling local-work **does not** delete your tasks and notes. Your data remains in:
+Uninstalling local-work **does not** delete your tasks and notes. Your data remains in:
 
     - **Linux**: `~/.local/share/local-work/`
     - **macOS**: `~/Library/Application Support/local-work/`
@@ -101,12 +101,14 @@ Standard Windows application directories:
 After installation, you can:
 
 1. **Initialize a project workspace** (recommended):
+
    ```bash
    cd /path/to/your/project
    task init
    ```
 
 2. **Use global workspace** (for personal tasks):
+
    ```bash
    task -g new "Personal task"
    note -g daily
@@ -127,11 +129,13 @@ After installation, you can:
 If `task` or `note` commands are not found after installation:
 
 1. **Verify installation**:
+
    ```bash
    npm list -g local-work
    ```
 
 2. **Check npm global bin directory**:
+
    ```bash
    npm config get prefix
    ```
@@ -139,6 +143,7 @@ If `task` or `note` commands are not found after installation:
 3. **Add to PATH** (if needed):
 
    **Linux/macOS**:
+
    ```bash
    echo 'export PATH="$(npm config get prefix)/bin:$PATH"' >> ~/.bashrc
    source ~/.bashrc

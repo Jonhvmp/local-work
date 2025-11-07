@@ -37,6 +37,7 @@ note meeting "Sprint Planning"
 ## :star: Features
 
 ### Task Management
+
 - **Auto-incrementing IDs** - Sequential task numbering (TASK-001, TASK-002, ...)
 - **Status Workflow** - backlog → active → completed → archived
 - **Priority System** - low, medium, high with color coding
@@ -44,18 +45,21 @@ note meeting "Sprint Planning"
 - **Full-text Search** - Find tasks across all fields
 
 ### Note Taking
+
 - **Daily Notes** - One note per day with automatic dating
 - **Meeting Notes** - Structured meeting logs with participants and action items
 - **Technical Decisions** - Architecture Decision Records (ADRs)
 - **Learning Notes** - Today I Learned (TIL) documentation
 
 ### Project-Aware (v3.0.0)
+
 - **Git-like Model** - Local workspace (.local-work/) or global workspace
 - **Auto-detection** - Works from any subdirectory in your project
 - **Global Flag** - Use `-g` or `--global` to access global workspace
 - **Zero Config** - Works out of the box with sensible defaults
 
 ### Cross-Platform
+
 - **Linux** - XDG Base Directory specification
 - **macOS** - Standard ~/Library paths
 - **Windows** - AppData directories
@@ -74,41 +78,41 @@ note meeting "Sprint Planning"
 
 <div class="grid cards" markdown>
 
--   :material-download:{ .lg .middle } __Getting Started__
+- :material-download:{ .lg .middle } **Getting Started**
 
-    ---
+  ***
 
-    Installation, initialization, and basic usage
+  Installation, initialization, and basic usage
 
-    [:octicons-arrow-right-24: Installation](getting-started/installation.md)
-    [:octicons-arrow-right-24: Configuration](getting-started/configuration.md)
-    [:octicons-arrow-right-24: Quick Start](getting-started/quick-start.md)
+  [:octicons-arrow-right-24: Installation](getting-started/installation.md)
+  [:octicons-arrow-right-24: Configuration](getting-started/configuration.md)
+  [:octicons-arrow-right-24: Quick Start](getting-started/quick-start.md)
 
--   :material-checkbox-marked-circle:{ .lg .middle } __User Guide__
+- :material-checkbox-marked-circle:{ .lg .middle } **User Guide**
 
-    ---
+  ***
 
-    Complete guides for tasks and notes
+  Complete guides for tasks and notes
 
-    [:octicons-arrow-right-24: Task Management](user-guide/tasks.md)
-    [:octicons-arrow-right-24: Note Taking](user-guide/notes.md)
+  [:octicons-arrow-right-24: Task Management](user-guide/tasks.md)
+  [:octicons-arrow-right-24: Note Taking](user-guide/notes.md)
 
--   :material-book-open-variant:{ .lg .middle } __Reference__
+- :material-book-open-variant:{ .lg .middle } **Reference**
 
-    ---
+  ***
 
-    Complete CLI command reference
+  Complete CLI command reference
 
-    [:octicons-arrow-right-24: Task Commands](reference/task-cli.md)
-    [:octicons-arrow-right-24: Note Commands](reference/note-cli.md)
+  [:octicons-arrow-right-24: Task Commands](reference/task-cli.md)
+  [:octicons-arrow-right-24: Note Commands](reference/note-cli.md)
 
--   :material-update:{ .lg .middle } __Migration__
+- :material-update:{ .lg .middle } **Migration**
 
-    ---
+  ***
 
-    Upgrade guides for existing users
+  Upgrade guides for existing users
 
-    [:octicons-arrow-right-24: v2.x to v3.0](migration/v2-to-v3.md)
+  [:octicons-arrow-right-24: v2.x to v3.0](migration/v2-to-v3.md)
 
 </div>
 

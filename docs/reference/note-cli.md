@@ -31,10 +31,10 @@ note [-g] daily [--no-edit]
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `--no-edit` | flag | No | Skip opening in editor |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type | Required | Description            |
+| -------------- | ---- | -------- | ---------------------- |
+| `--no-edit`    | flag | No       | Skip opening in editor |
+| `-g, --global` | flag | No       | Use global workspace   |
 
 ### Examples
 
@@ -101,11 +101,11 @@ note [-g] meeting [title] [--no-edit]
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `[title]` | string | No | Meeting title (prompted if omitted) |
-| `--no-edit` | flag | No | Skip opening in editor |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type   | Required | Description                         |
+| -------------- | ------ | -------- | ----------------------------------- |
+| `[title]`      | string | No       | Meeting title (prompted if omitted) |
+| `--no-edit`    | flag   | No       | Skip opening in editor              |
+| `-g, --global` | flag   | No       | Use global workspace                |
 
 ### Examples
 
@@ -189,11 +189,11 @@ note [-g] technical [title] [--no-edit]
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `[title]` | string | No | Decision/topic title (prompted if omitted) |
-| `--no-edit` | flag | No | Skip opening in editor |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type   | Required | Description                                |
+| -------------- | ------ | -------- | ------------------------------------------ |
+| `[title]`      | string | No       | Decision/topic title (prompted if omitted) |
+| `--no-edit`    | flag   | No       | Skip opening in editor                     |
+| `-g, --global` | flag   | No       | Use global workspace                       |
 
 ### Examples
 
@@ -283,11 +283,11 @@ note [-g] learning [title] [--no-edit]
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `[title]` | string | No | Learning topic title (prompted if omitted) |
-| `--no-edit` | flag | No | Skip opening in editor |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type   | Required | Description                                |
+| -------------- | ------ | -------- | ------------------------------------------ |
+| `[title]`      | string | No       | Learning topic title (prompted if omitted) |
+| `--no-edit`    | flag   | No       | Skip opening in editor                     |
+| `-g, --global` | flag   | No       | Use global workspace                       |
 
 ### Examples
 
@@ -369,10 +369,10 @@ note [-g] edit <note-file>
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `<note-file>` | string | Yes | Note filename or pattern |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter      | Type   | Required | Description              |
+| -------------- | ------ | -------- | ------------------------ |
+| `<note-file>`  | string | Yes      | Note filename or pattern |
+| `-g, --global` | flag   | No       | Use global workspace     |
 
 ### Examples
 
@@ -414,12 +414,12 @@ note [-g] list [type] [--date <date>] [--limit <n>]
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `[type]` | string | No | Filter by type: `daily`, `meeting`, `technical`, `learning` |
-| `--date <date>` | string | No | Filter by date (YYYY-MM-DD) |
-| `--limit <n>` | number | No | Limit results (default: 20) |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter       | Type   | Required | Description                                                 |
+| --------------- | ------ | -------- | ----------------------------------------------------------- |
+| `[type]`        | string | No       | Filter by type: `daily`, `meeting`, `technical`, `learning` |
+| `--date <date>` | string | No       | Filter by date (YYYY-MM-DD)                                 |
+| `--limit <n>`   | number | No       | Limit results (default: 20)                                 |
+| `-g, --global`  | flag   | No       | Use global workspace                                        |
 
 ### Examples
 
@@ -493,11 +493,11 @@ note [-g] search <term> [--type <type>]
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `<term>` | string | Yes | Search term (searches title and content) |
-| `--type <type>` | string | No | Filter by note type |
-| `-g, --global` | flag | No | Use global workspace |
+| Parameter       | Type   | Required | Description                              |
+| --------------- | ------ | -------- | ---------------------------------------- |
+| `<term>`        | string | Yes      | Search term (searches title and content) |
+| `--type <type>` | string | No       | Filter by note type                      |
+| `-g, --global`  | flag   | No       | Use global workspace                     |
 
 ### Examples
 
@@ -622,9 +622,9 @@ note [-g] open
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `-g, --global` | flag | No | Open global workspace |
+| Parameter      | Type | Required | Description           |
+| -------------- | ---- | -------- | --------------------- |
+| `-g, --global` | flag | No       | Open global workspace |
 
 ### Examples
 
@@ -654,10 +654,10 @@ note init [tasks-dir] [notes-dir]
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `[tasks-dir]` | string | No | Custom tasks directory (default: `.local-work/tasks`) |
-| `[notes-dir]` | string | No | Custom notes directory (default: `.local-work/notes`) |
+| Parameter     | Type   | Required | Description                                           |
+| ------------- | ------ | -------- | ----------------------------------------------------- |
+| `[tasks-dir]` | string | No       | Custom tasks directory (default: `.local-work/tasks`) |
+| `[notes-dir]` | string | No       | Custom notes directory (default: `.local-work/notes`) |
 
 ### Examples
 
@@ -710,26 +710,29 @@ Shows complete usage information with all commands, examples, and options.
 All dates use ISO 8601 format: `YYYY-MM-DD`
 
 **Examples:**
+
 - `2025-11-07`
 - `2025-01-15`
 
 ### Filename Patterns
 
-| Type | Pattern |
-|------|---------|
-| Daily | `YYYY-MM-DD.md` |
-| Meeting | `YYYY-MM-DD-title-slug.md` |
+| Type      | Pattern                    |
+| --------- | -------------------------- |
+| Daily     | `YYYY-MM-DD.md`            |
+| Meeting   | `YYYY-MM-DD-title-slug.md` |
 | Technical | `YYYY-MM-DD-title-slug.md` |
-| Learning | `YYYY-MM-DD-title-slug.md` |
+| Learning  | `YYYY-MM-DD-title-slug.md` |
 
 ### Title Slugs
 
 Titles are converted to slugs:
+
 - Lowercase
 - Spaces replaced with hyphens
 - Special characters removed
 
 **Examples:**
+
 - "Sprint Planning" → `sprint-planning`
 - "Use PostgreSQL" → `use-postgresql`
 - "OAuth 2.0 Flow" → `oauth-20-flow`
@@ -766,23 +769,26 @@ All notes include YAML frontmatter with metadata:
 
 ### Common Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `date` | string | Yes | Note date (YYYY-MM-DD) |
-| `type` | string | Yes | Note type |
-| `tags` | array | No | Tags for categorization |
+| Field  | Type   | Required | Description             |
+| ------ | ------ | -------- | ----------------------- |
+| `date` | string | Yes      | Note date (YYYY-MM-DD)  |
+| `type` | string | Yes      | Note type               |
+| `tags` | array  | No       | Tags for categorization |
 
 ### Type-Specific Fields
 
 **Meeting:**
+
 - `title` - Meeting title
 - `attendees` - List of participants
 
 **Technical:**
+
 - `title` - Decision/topic title
 - `status` - `proposed`, `accepted`, `deprecated`, `superseded`
 
 **Learning:**
+
 - `title` - Learning topic title
 - `source` - Where you learned it (optional)
 
@@ -790,10 +796,10 @@ All notes include YAML frontmatter with metadata:
 
 ## :material-keyboard-return: Exit Codes
 
-| Code | Description |
-|------|-------------|
-| `0` | Success |
-| `1` | Error (invalid arguments, note not found, etc.) |
+| Code | Description                                     |
+| ---- | ----------------------------------------------- |
+| `0`  | Success                                         |
+| `1`  | Error (invalid arguments, note not found, etc.) |
 
 ---
 

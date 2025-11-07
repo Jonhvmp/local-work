@@ -34,33 +34,34 @@ your-project/
 Global workspace is stored in platform-specific locations:
 
 === "Linux"
-    ```
-    ~/.local/share/local-work/
-    ├── tasks/
-    └── notes/
+
+````
+~/.local/share/local-work/
+├── tasks/
+└── notes/
 
     ~/.config/local-work/
     └── config.json
     ```
 
 === "macOS"
-    ```
-    ~/Library/Application Support/local-work/
-    ├── tasks/
-    └── notes/
+````
+
+~/Library/Application Support/local-work/
+├── tasks/
+└── notes/
 
     ~/Library/Preferences/local-work/
     └── config.json
     ```
 
 === "Windows"
-    ```
-    %APPDATA%\local-work\
+`     %APPDATA%\local-work\
     ├── tasks\
     ├── notes\
     └── config\
         └── config.json
-    ```
+    `
 
 Use the `-g` or `--global` flag to access the global workspace:
 
@@ -106,16 +107,16 @@ The `config.json` file contains:
 
 ### Preferences
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `editor` | string | `"vim"` | Default text editor for opening files |
-| `autoOpen` | boolean | `true` | Auto-open files in editor after creation |
-| `dateFormat` | string | `"YYYY-MM-DD"` | Date format for notes and tasks |
-| `colorOutput` | boolean | `true` | Enable colored terminal output |
-| `autoArchive` | boolean | `false` | Automatically archive old tasks |
-| `archiveDays` | number | `30` | Days before auto-archiving tasks |
-| `defaultPriority` | string | `"medium"` | Default priority for new tasks |
-| `defaultTaskStatus` | string | `"backlog"` | Default status for new tasks |
+| Key                 | Type    | Default        | Description                              |
+| ------------------- | ------- | -------------- | ---------------------------------------- |
+| `editor`            | string  | `"vim"`        | Default text editor for opening files    |
+| `autoOpen`          | boolean | `true`         | Auto-open files in editor after creation |
+| `dateFormat`        | string  | `"YYYY-MM-DD"` | Date format for notes and tasks          |
+| `colorOutput`       | boolean | `true`         | Enable colored terminal output           |
+| `autoArchive`       | boolean | `false`        | Automatically archive old tasks          |
+| `archiveDays`       | number  | `30`           | Days before auto-archiving tasks         |
+| `defaultPriority`   | string  | `"medium"`     | Default priority for new tasks           |
+| `defaultTaskStatus` | string  | `"backlog"`    | Default status for new tasks             |
 
 ---
 
@@ -306,14 +307,14 @@ See the [Migration Guide](../migration/v2-to-v3.md) for detailed instructions.
 
 local-work opens files in your configured editor. Common editors:
 
-| Editor | Command | Notes |
-|--------|---------|-------|
-| **Vim** | `vim` | Default |
-| **Neovim** | `nvim` | |
-| **VS Code** | `code` | Requires VS Code in PATH |
-| **Sublime Text** | `subl` | Requires Sublime in PATH |
-| **Nano** | `nano` | |
-| **Emacs** | `emacs` | |
+| Editor           | Command | Notes                    |
+| ---------------- | ------- | ------------------------ |
+| **Vim**          | `vim`   | Default                  |
+| **Neovim**       | `nvim`  |                          |
+| **VS Code**      | `code`  | Requires VS Code in PATH |
+| **Sublime Text** | `subl`  | Requires Sublime in PATH |
+| **Nano**         | `nano`  |                          |
+| **Emacs**        | `emacs` |                          |
 
 ### Set Your Editor
 

@@ -24,8 +24,9 @@ task init
 This creates a `.local-work/` directory for your tasks and notes.
 
 !!! success "Initialization Complete"
-    ```
-    ✓ Project initialized!
+
+````
+✓ Project initialized!
 
     You can now use task and note commands in this directory.
     Tasks and notes will be stored in this project.
@@ -39,7 +40,7 @@ This creates a `.local-work/` directory for your tasks and notes.
 
 ```bash
 task new "Implement user authentication" -p high
-```
+````
 
 **Flags:**
 
@@ -224,11 +225,7 @@ tags:
 
 ## Today's Focus
 
-
-
 ## Notes
-
-
 
 ## Action Items
 
@@ -265,15 +262,9 @@ tags:
 
 ## Agenda
 
-
-
 ## Discussion
 
-
-
 ## Decisions
-
-
 
 ## Action Items
 
@@ -301,15 +292,9 @@ tags:
 
 ## Context
 
-
-
 ## Decision
 
-
-
 ## Consequences
-
-
 
 ## Alternatives Considered
 ```
@@ -334,8 +319,6 @@ tags:
 ---
 
 ## What I Learned
-
-
 
 ## Key Takeaways
 

@@ -22,7 +22,6 @@
 🔧 **Zero Config** - Works out of the box with sensible defaults
 🌍 **Cross-Platform** - Linux, macOS, and Windows support
 
-
 ## Quick Start
 
 ### Installation
@@ -110,4 +109,3 @@ MIT © [Jonh Alex](https://github.com/jonhvmp)
 ---
 
 **Built for developers who value productivity and simplicity.**
-
