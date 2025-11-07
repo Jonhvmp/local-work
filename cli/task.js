@@ -27,15 +27,44 @@ const {
 // Import configuration system
 const config = require('./config');
 
-// Get tasks directory from config (supports workspaces and ENV overrides)
-const TASKS_DIR = config.getTasksDir();
+// ============================================================================
+// Parse CLI flags (v3.0.0 - Git-like model)
+// ============================================================================
 
-// Ensure all directories exist
-['active', 'backlog', 'completed', 'archived'].forEach((dir) => {
-  ensureDir(path.join(TASKS_DIR, dir));
-});
+// Check for -g/--global flag to force global workspace
+const useGlobalFlag = process.argv.includes('-g') || process.argv.includes('--global');
 
-/**
+// Remove flags from args to avoid interfering with command parsing
+const cleanArgs = process.argv.filter((arg) => arg !== '-g' && arg !== '--global');
+
+// Helper function to get tasks directory dynamically based on flag
+// This is a function (not a constant) so it respects the useGlobalFlag
+const getTasksDir = () => {
+  // For init command, return temporary path to avoid error during module load
+  const cmd = cleanArgs[2];
+  if (cmd === 'init' || cmd === undefined || cmd === 'help' || cmd === '--help') {
+    // Return a dummy path for commands that don't need workspace resolution yet
+    return path.join(process.cwd(), '.local-work', 'tasks');
+  }
+
+  try {
+    return config.getTasksDir(useGlobalFlag);
+  } catch (err) {
+    const e = /** @type {Error} */ (err);
+    error(`\n${icons.error} ${e.message}\n`);
+    console.log('Run "task init" to initialize local workspace or use -g for global workspace\n');
+    process.exit(1);
+  }
+};
+
+// Ensure all directories exist (but skip if command is init)
+const initCheck = cleanArgs[2];
+if (initCheck !== 'init' && initCheck !== undefined && initCheck !== 'help' && initCheck !== '--help') {
+  const tasksDir = getTasksDir();
+  ['active', 'backlog', 'completed', 'archived'].forEach((dir) => {
+    ensureDir(path.join(tasksDir, dir));
+  });
+}/**
  * Get next available task ID
  * Scans all task directories to find the highest ID and returns the next sequential number
  * @returns {string} Next task ID in format "XXX" (e.g., "001", "042")
@@ -46,7 +75,7 @@ function getNextTaskId() {
   const dirs = ['active', 'backlog', 'completed', 'archived'];
 
   dirs.forEach((dir) => {
-    const dirPath = path.join(TASKS_DIR, dir);
+    const dirPath = path.join(getTasksDir(), dir);
     if (fs.existsSync(dirPath)) {
       const files = fs.readdirSync(dirPath);
       files.forEach((file) => {
@@ -72,7 +101,7 @@ function findTask(taskId) {
   const id = taskId.replace('TASK-', '');
 
   for (const dir of dirs) {
-    const dirPath = path.join(TASKS_DIR, dir);
+    const dirPath = path.join(getTasksDir(), dir);
     if (fs.existsSync(dirPath)) {
       const files = fs.readdirSync(dirPath);
       const found = files.find((f) => f.startsWith(`TASK-${id}`));
@@ -111,7 +140,7 @@ function createTask(title, priority = 'medium', assignee = '') {
   const taskId = getNextTaskId();
   const date = getCurrentDate();
   const fileName = `TASK-${taskId}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
-  const filePath = path.join(TASKS_DIR, 'backlog', fileName);
+  const filePath = path.join(getTasksDir(), 'backlog', fileName);
 
   const template = `---
 id: TASK-${taskId}
@@ -180,7 +209,7 @@ function moveTask(taskId, targetStatus) {
     return;
   }
 
-  const targetPath = path.join(TASKS_DIR, targetStatus, task.file);
+  const targetPath = path.join(getTasksDir(), targetStatus, task.file);
 
   // Read and update the file
   let content = fs.readFileSync(task.path, 'utf8');
@@ -211,7 +240,7 @@ function listTasks(status = null) {
   const allTasks = [];
 
   dirs.forEach((dir) => {
-    const dirPath = path.join(TASKS_DIR, dir);
+    const dirPath = path.join(getTasksDir(), dir);
     if (fs.existsSync(dirPath)) {
       const files = fs.readdirSync(dirPath).filter((f) => f.startsWith('TASK-'));
 
@@ -340,7 +369,7 @@ function viewTask(taskId) {
  * Open task file in default editor
  * @param {string} taskId - Task ID to edit
  */
-function editTask(taskId) {
+async function editTask(taskId) {
   const task = findTask(taskId);
 
   if (!task) {
@@ -348,20 +377,16 @@ function editTask(taskId) {
     return;
   }
 
-  console.log(info(`\n${icons.info} Opening task in editor...\n`));
+  console.log(info(`\n${icons.edit} Opening task in editor...\n`));
 
-  openInEditor(task.path)
-    .then(() => {
-      // Update the 'updated' field
-      let content = fs.readFileSync(task.path, 'utf8');
-      content = updateFrontmatter(content, 'updated', getCurrentDate());
-      fs.writeFileSync(task.path, content);
+  await openInEditor(task.path);
 
-      console.log(success(`\n${icons.check} Task updated successfully!\n`));
-    })
-    .catch((err) => {
-      console.log(error(`\n${icons.cross} Error opening editor: ${err.message}\n`));
-    });
+  // Update the 'updated' field
+  let content = fs.readFileSync(task.path, 'utf8');
+  content = updateFrontmatter(content, 'updated', getCurrentDate());
+  fs.writeFileSync(task.path, content);
+
+  console.log(success(`\n${icons.check} Done!\n`));
 }
 
 /**
@@ -375,7 +400,7 @@ function searchTasks(searchTerm) {
   const results = [];
 
   dirs.forEach((dir) => {
-    const dirPath = path.join(TASKS_DIR, dir);
+    const dirPath = path.join(getTasksDir(), dir);
     if (fs.existsSync(dirPath)) {
       const files = fs.readdirSync(dirPath).filter((f) => f.startsWith('TASK-'));
 
@@ -486,7 +511,7 @@ function getStats() {
   };
 
   dirs.forEach((dir) => {
-    const dirPath = path.join(TASKS_DIR, dir);
+    const dirPath = path.join(getTasksDir(), dir);
     if (fs.existsSync(dirPath)) {
       const files = fs.readdirSync(dirPath).filter((f) => f.startsWith('TASK-'));
 
@@ -558,8 +583,8 @@ function getStats() {
  * @param {number} [days=30] - Number of days threshold for archiving
  */
 function archiveOldTasks(days = 30) {
-  const completedDir = path.join(TASKS_DIR, 'completed');
-  const archivedDir = path.join(TASKS_DIR, 'archived');
+  const completedDir = path.join(getTasksDir(), 'completed');
+  const archivedDir = path.join(getTasksDir(), 'archived');
 
   if (!fs.existsSync(completedDir)) {
     console.log(dim(`\n${icons.info} No completed tasks to archive\n`));
@@ -591,24 +616,53 @@ function archiveOldTasks(days = 30) {
   }
 }
 
-// CLI interface
-const args = process.argv.slice(2);
+// CLI interface (v3.0.0 - uses cleaned args without -g flag)
+const args = cleanArgs.slice(2);
 const command = args[0];
 
 switch (command) {
   case 'new': {
-    const title = args.slice(1).join(' ') || '';
-    const priority =
-      args[args.indexOf('-p') + 1] || args[args.indexOf('--priority') + 1] || 'medium';
-    const assignee = args[args.indexOf('-a') + 1] || args[args.indexOf('--assignee') + 1] || '';
+    const noEdit = args.includes('--no-edit');
+
+    // Extract priority and assignee values
+    const priorityIndex = Math.max(args.indexOf('-p'), args.indexOf('--priority'));
+    const assigneeIndex = Math.max(args.indexOf('-a'), args.indexOf('--assignee'));
+    const priority = priorityIndex >= 0 ? args[priorityIndex + 1] || 'medium' : 'medium';
+    const assignee = assigneeIndex >= 0 ? args[assigneeIndex + 1] || '' : '';
+
+    // Build title by filtering out flags and their values
+    const skipIndices = new Set();
+    if (priorityIndex >= 0) {
+      skipIndices.add(priorityIndex);
+      skipIndices.add(priorityIndex + 1);
+    }
+    if (assigneeIndex >= 0) {
+      skipIndices.add(assigneeIndex);
+      skipIndices.add(assigneeIndex + 1);
+    }
+
+    const titleParts = args.slice(1).filter((arg, index) => {
+      const actualIndex = index + 1; // Adjust for slice(1)
+      return arg !== '--no-edit' && !skipIndices.has(actualIndex);
+    });
+
+    const title = titleParts.join(' ') || '';
 
     if (!title) {
       console.log(error('\n Error: Task title is required\n'));
-      console.log('Usage: task new <title> [-p priority] [-a assignee]');
+      console.log('Usage: task new <title> [-p priority] [-a assignee] [--no-edit]');
       process.exit(1);
     }
 
-    createTask(title, priority, assignee);
+    (async () => {
+      const task = createTask(title, priority, assignee);
+
+      // Auto-open in editor unless --no-edit flag is present
+      if (!noEdit) {
+        console.log(info(`${icons.edit} Opening task in editor...\n`));
+        await openInEditor(task.filePath);
+      }
+    })();
     break;
   }
 
@@ -661,7 +715,9 @@ switch (command) {
       console.log('Usage: task edit TASK-XXX');
       process.exit(1);
     }
-    editTask(editTaskId);
+    (async () => {
+      await editTask(editTaskId);
+    })();
     break;
   }
 
@@ -704,133 +760,35 @@ switch (command) {
     break;
   }
 
-  case 'workspace': {
-    const subCommand = args[1];
-    const workspaceName = args[2];
-
-    switch (subCommand) {
-      case 'list': {
-        const workspaces = config.listWorkspaces();
-        const activeWorkspace = config.getActiveWorkspace();
-
-        console.log(`\n${bold('Workspaces:')}\n`);
-        Object.values(workspaces).forEach((ws) => {
-          /** @type {any} */ const workspace = ws;
-          const active =
-            workspace.name === activeWorkspace.name ? success('● active') : dim('○ inactive');
-          console.log(`  ${active} ${bold(workspace.name)}`);
-          console.log(`    ${dim(`Path: ${workspace.path}`)}`);
-          if (workspace.description) {
-            console.log(`    ${dim(`Description: ${workspace.description}`)}`);
-          }
-          console.log();
-        });
-        break;
-      }
-
-      case 'add': {
-        const workspacePath = args[3];
-        if (!workspaceName || !workspacePath) {
-          error('Usage: task workspace add <name> <path>');
-          process.exit(1);
-        }
-
-        const description = args[4] || '';
-        const newWorkspace = config.addWorkspace(workspaceName, workspacePath, description);
-
-        if (newWorkspace) {
-          /** @type {any} */ const ws = newWorkspace;
-          success(`✓ Workspace '${workspaceName}' created at ${ws.path}`);
-        } else {
-          error('Failed to create workspace');
-          process.exit(1);
-        }
-        break;
-      }
-
-      case 'switch': {
-        if (!workspaceName) {
-          error('Usage: task workspace switch <name>');
-          process.exit(1);
-        }
-
-        const workspace = config.switchWorkspace(workspaceName);
-        if (workspace) {
-          success(`✓ Switched to workspace '${workspaceName}'`);
-          info(`  Tasks: ${config.getTasksDir()}`);
-        } else {
-          error('Failed to switch workspace');
-          process.exit(1);
-        }
-        break;
-      }
-
-      case 'remove': {
-        if (!workspaceName) {
-          error('Usage: task workspace remove <name> [--delete-files]');
-          process.exit(1);
-        }
-
-        const deleteFiles = args.includes('--delete-files');
-        const removed = config.removeWorkspace(workspaceName, deleteFiles);
-
-        if (removed) {
-          success(`✓ Workspace '${workspaceName}' removed`);
-          if (deleteFiles) {
-            warning('  Files were deleted');
-          } else {
-            info('  Files were kept (use --delete-files to remove)');
-          }
-        } else {
-          error('Failed to remove workspace');
-          process.exit(1);
-        }
-        break;
-      }
-
-      default:
-        console.log(`
-${bold('Workspace Management')}
-
-${info('Usage:')}
-  task workspace list                      List all workspaces
-  task workspace add <name> <path>         Create new workspace
-  task workspace switch <name>             Switch to workspace
-  task workspace remove <name>             Remove workspace
-
-${info('Examples:')}
-  task workspace list
-  task workspace add project-x ~/projects/x
-  task workspace switch project-x
-  task workspace remove old-project --delete-files
-        `);
-    }
-    break;
-  }
-
   case 'config': {
     const subCommand = args[1];
 
     switch (subCommand) {
       case 'show': {
         const currentConfig = config.loadConfig();
-        const workspace = config.getActiveWorkspace();
 
-        console.log(`\n${bold('Configuration:')}\n`);
-        console.log(`${info('Platform:')} ${config.getPlatform()}`);
-        console.log(`${info('Config Dir:')} ${config.getConfigDir()}`);
-        console.log(`${info('Data Dir:')} ${config.getDataDir()}\n`);
+        try {
+          const workspace = config.resolveWorkspace(useGlobalFlag);
 
-        /** @type {any} */ const ws = workspace;
-        console.log(`${bold('Active Workspace:')} ${ws.name}`);
-        console.log(`${info('Tasks Dir:')} ${config.getTasksDir()}`);
-        console.log(`${info('Notes Dir:')} ${config.getNotesDir()}\n`);
+          console.log(`\n${bold('Configuration (v3.0.0):')}\n`);
+          console.log(`${info('Platform:')} ${config.getPlatform()}`);
+          console.log(`${info('Config Dir:')} ${config.getConfigDir()}`);
+          console.log(`${info('Data Dir:')} ${config.getDataDir()}\n`);
 
-        console.log(`${bold('Preferences:')}`);
-        /** @type {any} */ const cfg = currentConfig;
-        Object.entries(cfg.preferences || {}).forEach(([key, value]) => {
-          console.log(`  ${dim(key)}: ${value}`);
-        });
+          console.log(`${bold('Workspace:')} ${workspace.mode}`);
+          console.log(`${info('Tasks Dir:')} ${workspace.tasksDir}`);
+          console.log(`${info('Notes Dir:')} ${workspace.notesDir}\n`);
+
+          console.log(`${bold('Preferences:')}`);
+          /** @type {any} */ const cfg = currentConfig;
+          Object.entries(cfg.preferences || {}).forEach(([key, value]) => {
+            console.log(`  ${dim(key)}: ${value}`);
+          });
+        } catch (err) {
+          const e = /** @type {Error} */ (err);
+          error(`Cannot resolve workspace: ${e.message}`);
+          process.exit(1);
+        }
         console.log();
         break;
       }
@@ -965,42 +923,47 @@ ${info('Examples:')}
 
   default:
     console.log(`
-${bold('Task Management CLI')}
+${bold('Task Management CLI (v3.0.0)')}
 
 ${info('Usage:')}
-  task init [tasks-dir] [notes-dir]             Initialize local-work in current project
-  task new <title> [-p priority] [-a assignee]  Create a new task
-  task start TASK-XXX                           Move task to active
-  task done TASK-XXX                            Mark task as completed
-  task list [status]                            List all tasks or by status
-  task view TASK-XXX                            View task details
-  task edit TASK-XXX                            Edit task in editor
-  task search <term>                            Search tasks by term
-  task update TASK-XXX <field> <value>          Update task field
-  task stats                                    Show task statistics
-  task archive [days]                           Archive old tasks (default: 30)
-  task workspace <command>                      Manage workspaces
-  task config <command>                         Manage configuration
+  task [-g] init [tasks-dir] [notes-dir]        Initialize local-work in current project
+  task [-g] new <title> [-p priority] [-a assignee] [--no-edit]  Create a new task
+  task [-g] edit TASK-XXX                       Edit task in editor
+  task [-g] start TASK-XXX                      Move task to active
+  task [-g] done TASK-XXX                       Mark task as completed
+  task [-g] list [status]                       List all tasks or by status
+  task [-g] view TASK-XXX                       View task details
+  task [-g] search <term>                       Search tasks by term
+  task [-g] update TASK-XXX <field> <value>     Update task field
+  task [-g] stats                               Show task statistics
+  task [-g] archive [days]                      Archive old tasks (default: 30)
+  task [-g] config <command>                    Manage configuration
   task migrate --from <path>                    Migrate from old location
-  task open                                     Open tasks directory
+  task [-g] open                                Open tasks directory
+
+${info('Workspace Model (Git-like):')}
+  By default, task uses local workspace (.local-work/ in current project)
+  Use -g or --global flag to work with global workspace instead
 
 ${info('Examples:')}
-  task init                                     # Use default .local-work/tasks and .local-work/notes
-  task init ./my-tasks ./my-notes               # Custom directories (relative to project root)
-  task new "Implement login" -p high -a jonhvmp
+  task init                                     # Initialize local workspace
+  task -g list                                  # List tasks from global workspace
+  task new "Implement login" -p high            # Create task (opens in editor)
+  task new "Automated task" --no-edit           # Create without opening editor
+  task -g new "Personal task"                   # Create task in global workspace
+  task edit TASK-001                            # Edit existing task
   task start TASK-001
   task done TASK-001
   task list active
   task view TASK-001
-  task edit TASK-001
   task search "authentication"
   task update TASK-001 priority high
   task update TASK-001 tags "backend,auth"
   task stats
   task archive 60
-  task workspace list
   task config show
-  task open
+  task -g open                                  # Open global tasks directory
+  task open                                     # Open local tasks directory
 
 ${info('Statuses:')} backlog, active, completed, archived
 ${info('Priorities:')} low, medium, high

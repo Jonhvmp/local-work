@@ -46,14 +46,13 @@ const readline = require('readline');
 /**
  * @typedef {Object} Config
  * @property {string} version - Config version
- * @property {string} activeWorkspace - Name of active workspace
- * @property {Object.<string, WorkspaceConfig>} workspaces - All workspaces
- * @property {string} [editor] - Default editor (legacy)
+ * @property {Object} global - Global workspace settings
+ * @property {string} global.tasksDir - Global tasks directory
+ * @property {string} global.notesDir - Global notes directory
  * @property {PreferencesConfig} preferences - User preferences
  * @property {SyncConfig} sync - Sync settings
  * @property {string} createdAt - ISO timestamp of config creation
  * @property {string} updatedAt - ISO timestamp of last update
- * @property {boolean} [firstRun] - Whether this is first run
  */
 
 // ============================================================================
@@ -181,7 +180,8 @@ function loadLocalConfig(configPath) {
     const configData = fs.readFileSync(configPath, 'utf8');
     return JSON.parse(configData);
   } catch (error) {
-    console.error(`Error loading local config from ${configPath}:`, error.message);
+    const err = /** @type {Error} */ (error);
+    console.error(`Error loading local config from ${configPath}:`, err.message);
     return null;
   }
 }
@@ -334,29 +334,85 @@ function initLocalConfig(options = {}) {
 }
 
 // ============================================================================
+// Workspace Resolution (v3.0.0 - Git-like model)
+// ============================================================================
+
+/**
+ * @typedef {Object} WorkspaceResolution
+ * @property {string} tasksDir - Absolute path to tasks directory
+ * @property {string} notesDir - Absolute path to notes directory
+ * @property {'local'|'global'} mode - Workspace mode
+ */
+
+/**
+ * Resolve workspace directories based on mode (Git-like behavior)
+ * @param {boolean} [useGlobal=false] - Force global workspace (via -g flag)
+ * @returns {WorkspaceResolution} Resolved workspace paths and mode
+ * @throws {Error} If local workspace not found and not using global
+ */
+function resolveWorkspace(useGlobal = false) {
+  // Force global mode (-g flag)
+  if (useGlobal) {
+    const dataDir = getDataDir();
+    return {
+      tasksDir: path.join(dataDir, 'tasks'),
+      notesDir: path.join(dataDir, 'notes'),
+      mode: 'global',
+    };
+  }
+
+  // Try local workspace first
+  const localConfigPath = findLocalConfig();
+  if (localConfigPath) {
+    const localConfig = loadLocalConfig(localConfigPath);
+    if (localConfig) {
+      // @ts-ignore - Dynamic config from JSON
+      const projectRoot = localConfig.projectRoot || path.dirname(path.dirname(localConfigPath));
+      return {
+        // @ts-ignore - Dynamic config from JSON
+        tasksDir: path.resolve(projectRoot, localConfig.tasksDir),
+        // @ts-ignore - Dynamic config from JSON
+        notesDir: path.resolve(projectRoot, localConfig.notesDir),
+        mode: 'local',
+      };
+    }
+  }
+
+  // No local workspace found - throw error
+  throw new Error(
+    `Not in a local-work directory.
+
+Initialize local workspace:  task init
+Use global workspace:        task -g <command>
+
+Example:
+  cd ~/my-project
+  task init                  # Create .local-work/ here
+  task new "My task"         # Works in this project
+
+  task -g new "Personal"     # Uses global workspace`
+  );
+}
+
+// ============================================================================
 // Configuration Management
 // ============================================================================
 
 /**
- * Get default configuration
+ * Get default configuration (v3.0.0 - simplified)
  * @returns {Config} Default configuration object
  */
 function getDefaultConfig() {
   const dataDir = getDataDir();
 
   return {
-    version: '2.0.0',
-    workspaces: {
-      default: {
-        name: 'default',
-        path: dataDir,
-        active: true,
-        description: 'Default workspace',
-      },
+    version: '3.0.0',
+    global: {
+      tasksDir: path.join(dataDir, 'tasks'),
+      notesDir: path.join(dataDir, 'notes'),
     },
-    activeWorkspace: 'default',
-    editor: process.env.EDITOR || process.env.VISUAL || 'vim',
     preferences: {
+      editor: process.env.EDITOR || process.env.VISUAL || 'vim',
       colorOutput: true,
       autoArchive: true,
       archiveDays: 30,
@@ -368,7 +424,6 @@ function getDefaultConfig() {
       provider: null,
       lastSync: null,
     },
-    firstRun: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -377,6 +432,7 @@ function getDefaultConfig() {
 /**
  * Load configuration from disk
  * Creates default config if file doesn't exist
+ * Supports migration from v2.x to v3.0
  * @returns {Config} Configuration object
  */
 function loadConfig() {
@@ -387,11 +443,31 @@ function loadConfig() {
       const configData = fs.readFileSync(configPath, 'utf8');
       const config = JSON.parse(configData);
 
+      // Check version and migrate if needed
+      if (config.version && config.version.startsWith('2.')) {
+        console.log('\n[!] Detected v2.x configuration. Migration required.');
+        console.log('    Run: task migrate\n');
+        // For now, return v2 config with defaults merged
+        const defaultConfig = getDefaultConfig();
+        return {
+          ...defaultConfig,
+          ...config,
+          preferences: {
+            ...defaultConfig.preferences,
+            ...(config.preferences || {}),
+          },
+        };
+      }
+
       // Merge with defaults to ensure all fields exist
       const defaultConfig = getDefaultConfig();
       return {
         ...defaultConfig,
         ...config,
+        global: {
+          ...defaultConfig.global,
+          ...(config.global || {}),
+        },
         preferences: {
           ...defaultConfig.preferences,
           ...(config.preferences || {}),
@@ -475,250 +551,80 @@ function updatePreference(key, value) {
  * @returns {any} Preference value
  */
 function getPreference(key, defaultValue = null) {
-  const config = loadConfig();
-  // @ts-ignore - Dynamic key access is intentional for preferences
-  return config.preferences?.[key] ?? defaultValue;
-}
-
-// ============================================================================
-// Workspace Management
+  // ============================================================================
+// Working Directories (v3.0.0 - uses resolveWorkspace)
 // ============================================================================
 
 /**
- * Get active workspace
- * @returns {WorkspaceConfig} Active workspace object
- */
-function getActiveWorkspace() {
-  const config = loadConfig();
-  const workspaceName = config.activeWorkspace || 'default';
-  const workspace = config.workspaces[workspaceName];
-
-  if (!workspace) {
-    console.warn(`Active workspace '${workspaceName}' not found, using default`);
-    return config.workspaces.default;
-  }
-
-  return workspace;
-}
-
-/**
- * List all workspaces
- * @returns {Object.<string, WorkspaceConfig>} Workspaces object
- */
-function listWorkspaces() {
-  const config = loadConfig();
-  return config.workspaces || {};
-}
-
-/**
- * Add a new workspace
- * @param {string} name - Workspace name
- * @param {string} workspacePath - Path to workspace directory
- * @param {string} description - Optional description
- * @returns {WorkspaceConfig|null} Created workspace or null if error
- */
-function addWorkspace(name, workspacePath, description = '') {
-  const config = loadConfig();
-
-  // Validate inputs
-  if (!name || typeof name !== 'string') {
-    console.error('Invalid workspace name');
-    return null;
-  }
-
-  if (!workspacePath || typeof workspacePath !== 'string') {
-    console.error('Invalid workspace path');
-    return null;
-  }
-
-  // Check if workspace already exists
-  if (config.workspaces[name]) {
-    console.error(`Workspace '${name}' already exists`);
-    return null;
-  }
-
-  // Resolve absolute path
-  const absolutePath = path.resolve(workspacePath);
-
-  // Create workspace object
-  const workspace = {
-    name,
-    path: absolutePath,
-    active: false,
-    description: description || `Workspace: ${name}`,
-    createdAt: new Date().toISOString(),
-  };
-
-  // Add to config
-  config.workspaces[name] = workspace;
-
-  // Save config
-  if (saveConfig(config)) {
-    // Initialize workspace directory structure
-    initializeWorkspace(absolutePath);
-    return workspace;
-  }
-
-  return null;
-}
-
-/**
- * Switch to a different workspace
- * @param {string} name - Workspace name to switch to
- * @returns {Object|null} Activated workspace or null if error
- */
-function switchWorkspace(name) {
-  const config = loadConfig();
-
-  // Check if workspace exists
-  if (!config.workspaces[name]) {
-    console.error(`Workspace '${name}' not found`);
-    return null;
-  }
-
-  // Deactivate all workspaces
-  Object.keys(config.workspaces).forEach((key) => {
-    config.workspaces[key].active = false;
-  });
-
-  // Activate selected workspace
-  config.workspaces[name].active = true;
-  config.activeWorkspace = name;
-
-  // Save config
-  if (saveConfig(config)) {
-    return config.workspaces[name];
-  }
-
-  return null;
-}
-
-/**
- * Remove a workspace
- * @param {string} name - Workspace name to remove
- * @param {boolean} deleteFiles - Whether to delete files (default: false)
- * @returns {boolean} Success status
- */
-function removeWorkspace(name, deleteFiles = false) {
-  const config = loadConfig();
-
-  // Cannot remove default workspace
-  if (name === 'default') {
-    console.error('Cannot remove default workspace');
-    return false;
-  }
-
-  // Check if workspace exists
-  if (!config.workspaces[name]) {
-    console.error(`Workspace '${name}' not found`);
-    return false;
-  }
-
-  // If this is the active workspace, switch to default
-  if (config.activeWorkspace === name) {
-    switchWorkspace('default');
-  }
-
-  // Delete files if requested
-  if (deleteFiles) {
-    const workspacePath = config.workspaces[name].path;
-    try {
-      if (fs.existsSync(workspacePath)) {
-        fs.rmSync(workspacePath, { recursive: true, force: true });
-      }
-    } catch (error) {
-      const err = /** @type {Error} */ (error);
-      console.error('Error deleting workspace files:', err.message);
-    }
-  }
-
-  // Remove from config
-  delete config.workspaces[name];
-
-  return saveConfig(config);
-}
-
-// ============================================================================
-// Working Directories
-// ============================================================================
-
-/**
- * Get tasks directory
- * Priority: Local config > ENV variable > Active workspace > Default
+ * Get tasks directory (simplified for v3.0)
+ * Use resolveWorkspace() for proper Git-like behavior
+ * @param {boolean} [useGlobal=false] - Force global workspace
  * @returns {string} Tasks directory path
  */
-function getTasksDir() {
-  // 1. Local project configuration (highest priority)
-  const localConfigPath = findLocalConfig();
-  if (localConfigPath) {
-    const localConfig = loadLocalConfig(localConfigPath);
-    if (localConfig && localConfig.tasksDir) {
-      // Use projectRoot from config, not dirname of config file
-      const projectRoot = localConfig.projectRoot || path.dirname(path.dirname(localConfigPath));
-      return path.resolve(projectRoot, localConfig.tasksDir);
-    }
+function getTasksDir(useGlobal = false) {
+  try {
+    const workspace = resolveWorkspace(useGlobal);
+    return workspace.tasksDir;
+  } catch (error) {
+    // Fallback to global if resolution fails
+    const dataDir = getDataDir();
+    return path.join(dataDir, 'tasks');
   }
-
-  // 2. Environment variable override
-  if (process.env.LOCAL_WORK_TASKS_DIR) {
-    return process.env.LOCAL_WORK_TASKS_DIR;
-  }
-
-  // 3. Check for legacy environment variable
-  if (process.env.LOCAL_WORK_DIR) {
-    return path.join(process.env.LOCAL_WORK_DIR, 'tasks');
-  }
-
-  // 4. Active workspace
-  const workspace = getActiveWorkspace();
-  return path.join(workspace.path, 'tasks');
 }
 
 /**
- * Get notes directory
- * Priority: Local config > ENV variable > Active workspace > Default
+ * Get notes directory (simplified for v3.0)
+ * Use resolveWorkspace() for proper Git-like behavior
+ * @param {boolean} [useGlobal=false] - Force global workspace
  * @returns {string} Notes directory path
  */
-function getNotesDir() {
-  // 1. Local project configuration (highest priority)
-  const localConfigPath = findLocalConfig();
-  if (localConfigPath) {
-    const localConfig = loadLocalConfig(localConfigPath);
-    if (localConfig && localConfig.notesDir) {
-      // Use projectRoot from config, not dirname of config file
-      const projectRoot = localConfig.projectRoot || path.dirname(path.dirname(localConfigPath));
-      return path.resolve(projectRoot, localConfig.notesDir);
-    }
+function getNotesDir(useGlobal = false) {
+  try {
+    const workspace = resolveWorkspace(useGlobal);
+    return workspace.notesDir;
+  } catch (error) {
+    // Fallback to global if resolution fails
+    const dataDir = getDataDir();
+    return path.join(dataDir, 'notes');
   }
+}
+}
 
-  // 2. Environment variable override
-  if (process.env.LOCAL_WORK_NOTES_DIR) {
-    return process.env.LOCAL_WORK_NOTES_DIR;
-  }
+// ============================================================================
+// Working Directories (v3.0.0 - Git-like workspace model)
+// ============================================================================
 
-  // 3. Check for legacy environment variable
-  if (process.env.LOCAL_WORK_DIR) {
-    return path.join(process.env.LOCAL_WORK_DIR, 'notes');
-  }
-
-  // 4. Active workspace
-  const workspace = getActiveWorkspace();
-  return path.join(workspace.path, 'notes');
+/**
+ * Get tasks directory (v3.0 simplified)
+ * @param {boolean} [useGlobal=false] - Force global workspace
+ * @returns {string} Tasks directory path
+ * @throws {Error} If workspace cannot be resolved
+ */
+function getTasksDir(useGlobal = false) {
+  const workspace = resolveWorkspace(useGlobal);
+  return workspace.tasksDir;
 }
 
 /**
- * Get workspace base directory
- * @returns {string} Workspace directory path
+ * Get notes directory (v3.0 simplified)
+ * @param {boolean} [useGlobal=false] - Force global workspace
+ * @returns {string} Notes directory path
+ * @throws {Error} If workspace cannot be resolved
  */
-function getWorkDir() {
-  // Environment variable override
-  if (process.env.LOCAL_WORK_DIR) {
-    return process.env.LOCAL_WORK_DIR;
-  }
+function getNotesDir(useGlobal = false) {
+  const workspace = resolveWorkspace(useGlobal);
+  return workspace.notesDir;
+}
 
-  // Active workspace
-  const workspace = getActiveWorkspace();
-  return workspace.path;
+/**
+ * Get workspace base directory (v3.0 - returns local or global)
+ * @param {boolean} [useGlobal=false] - Force global workspace
+ * @returns {string} Workspace directory path
+ * @throws {Error} If workspace cannot be resolved
+ */
+function getWorkDir(useGlobal = false) {
+  const workspace = resolveWorkspace(useGlobal);
+  return workspace.mode === 'local' ? workspace.tasksDir : getDataDir();
 }
 
 // ============================================================================
@@ -945,7 +851,8 @@ function promptMigration() {
 async function handleFirstRun() {
   const config = loadConfig();
 
-  // Check if this is first run
+  // Check if this is first run (v2 compatibility)
+  // @ts-ignore - firstRun only exists in v2 configs
   if (!config.firstRun) {
     return;
   }
@@ -972,7 +879,8 @@ async function handleFirstRun() {
     ensureDirectoryStructure();
   }
 
-  // Mark first run as complete
+  // Mark first run as complete (v2 compatibility)
+  // @ts-ignore - firstRun only exists in v2 configs
   config.firstRun = false;
   saveConfig(config);
 }
@@ -1005,12 +913,8 @@ module.exports = {
   updatePreference,
   getPreference,
 
-  // Workspace management
-  getActiveWorkspace,
-  listWorkspaces,
-  addWorkspace,
-  switchWorkspace,
-  removeWorkspace,
+  // Workspace resolution (v3.0.0 - Git-like model)
+  resolveWorkspace,
 
   // Working directories
   getTasksDir,

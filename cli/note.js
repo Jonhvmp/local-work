@@ -22,31 +22,54 @@ const {
 // Import configuration system
 const config = require('./config');
 
-// Get notes directory from config (supports workspaces and ENV overrides)
-const NOTES_DIR = config.getNotesDir();
+// ============================================================================
+// Parse CLI flags (v3.0.0 - Git-like model)
+// ============================================================================
+
+// Check for -g/--global flag to force global workspace
+const useGlobalFlag = process.argv.includes('-g') || process.argv.includes('--global');
+
+// Remove flags from args to avoid interfering with command parsing
+const cleanArgs = process.argv.filter((arg) => arg !== '-g' && arg !== '--global');
+
+// Helper function to get notes directory dynamically based on flag
+// This is a function (not a constant) so it respects the useGlobalFlag
+const getNotesDir = () => {
+  try {
+    return config.getNotesDir(useGlobalFlag);
+  } catch (err) {
+    const e = /** @type {Error} */ (err);
+    error(`\n${icons.error} ${e.message}\n`);
+    console.log('Run "note init" to initialize local workspace or use -g for global workspace\n');
+    process.exit(1);
+  }
+};
 
 // Ensure all directories exist
 ['daily', 'meetings', 'technical', 'learning'].forEach((dir) => {
-  ensureDir(path.join(NOTES_DIR, dir));
+  ensureDir(path.join(getNotesDir(), dir));
 });
 
 /**
  * Create a daily note for today
  * Creates a new daily note with standard template or opens existing one
+ * @param {boolean} [autoEdit=true] - Whether to auto-open in editor
  * @returns {void}
  */
-function createDailyNote() {
+function createDailyNote(autoEdit = true) {
   const date = getCurrentDate();
   const fileName = `${date}.md`;
-  const filePath = path.join(NOTES_DIR, 'daily', fileName);
+  const filePath = path.join(getNotesDir(), 'daily', fileName);
 
   if (fs.existsSync(filePath)) {
     console.log(warning(`\n${icons.warning} Daily note already exists for today`));
     console.log(info(`${icons.info} Opening existing note...\n`));
 
-    openInEditor(filePath)
-      .then(() => console.log(success(`\n${icons.check} Note saved\n`)))
-      .catch((err) => console.log(error(`\n${icons.cross} Error: ${err.message}\n`)));
+    if (autoEdit) {
+      openInEditor(filePath)
+        .then(() => console.log(success(`\n${icons.check} Note saved\n`)))
+        .catch((err) => console.log(error(`\n${icons.cross} Error: ${err.message}\n`)));
+    }
     return;
   }
 
@@ -81,23 +104,26 @@ related_tasks: []
   console.log(success(`\n${icons.check} Daily note created successfully!`));
   console.log(dim(`   Location: ${filePath}\n`));
 
-  // Auto-open in editor
-  openInEditor(filePath)
-    .then(() => console.log(success(`\n${icons.check} Note saved\n`)))
-    .catch((err) => console.log(error(`\n${icons.cross} Error: ${err.message}\n`)));
+  // Auto-open in editor if requested
+  if (autoEdit) {
+    openInEditor(filePath)
+      .then(() => console.log(success(`\n${icons.check} Note saved\n`)))
+      .catch((err) => console.log(error(`\n${icons.cross} Error: ${err.message}\n`)));
+  }
 }
 
 /**
  * Create a meeting note
  * @param {string} title - Meeting title
+ * @param {boolean} [autoEdit=true] - Whether to auto-open in editor
  * @returns {void}
  */
-function createMeetingNote(title) {
+function createMeetingNote(title, autoEdit = true) {
   const date = getCurrentDate();
   const time = getCurrentTime();
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const fileName = `${date}-${slug}.md`;
-  const filePath = path.join(NOTES_DIR, 'meetings', fileName);
+  const filePath = path.join(getNotesDir(), 'meetings', fileName);
 
   const template = `---
 date: ${date}
@@ -150,22 +176,25 @@ related_tasks: []
   console.log(info(`${icons.note} ${title}`));
   console.log(dim(`   Location: ${filePath}\n`));
 
-  openInEditor(filePath)
-    .then(() => console.log(success(`\n${icons.check} Note saved\n`)))
-    .catch((err) => console.log(error(`\n${icons.cross} Error: ${err.message}\n`)));
+  if (autoEdit) {
+    openInEditor(filePath)
+      .then(() => console.log(success(`\n${icons.check} Note saved\n`)))
+      .catch((err) => console.log(error(`\n${icons.cross} Error: ${err.message}\n`)));
+  }
 }
 
 /**
- * Create a technical note (ADR - Architecture Decision Record)
- * @param {string} title - Technical decision title
+ * Create a technical decision record (ADR)
+ * @param {string} title - Decision title
+ * @param {boolean} [autoEdit=true] - Whether to auto-open in editor
  * @returns {void}
  */
-function createTechnicalNote(title) {
+function createTechnicalNote(title, autoEdit = true) {
   const date = getCurrentDate();
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
   // Get next ADR number
-  const technicalDir = path.join(NOTES_DIR, 'technical');
+  const technicalDir = path.join(getNotesDir(), 'technical');
   const files = fs.readdirSync(technicalDir);
   const adrNumbers = files
     .filter((f) => f.startsWith('ADR-'))
@@ -239,21 +268,24 @@ status: proposed
   console.log(info(`${icons.note} ADR-${adrId}: ${title}`));
   console.log(dim(`   Location: ${filePath}\n`));
 
-  openInEditor(filePath)
-    .then(() => console.log(success(`\n${icons.check} Note saved\n`)))
-    .catch((err) => console.log(error(`\n${icons.cross} Error: ${err.message}\n`)));
+  if (autoEdit) {
+    openInEditor(filePath)
+      .then(() => console.log(success(`\n${icons.check} Note saved\n`)))
+      .catch((err) => console.log(error(`\n${icons.cross} Error: ${err.message}\n`)));
+  }
 }
 
 /**
  * Create a learning note (TIL - Today I Learned)
  * @param {string} title - Learning topic title
+ * @param {boolean} [autoEdit=true] - Whether to auto-open in editor
  * @returns {void}
  */
-function createLearningNote(title) {
+function createLearningNote(title, autoEdit = true) {
   const date = getCurrentDate();
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const fileName = `${date}-${slug}.md`;
-  const filePath = path.join(NOTES_DIR, 'learning', fileName);
+  const filePath = path.join(getNotesDir(), 'learning', fileName);
 
   const template = `---
 date: ${date}
@@ -300,9 +332,67 @@ source: ""
   console.log(info(`${icons.note} ${title}`));
   console.log(dim(`   Location: ${filePath}\n`));
 
-  openInEditor(filePath)
-    .then(() => console.log(success(`\n${icons.check} Note saved\n`)))
-    .catch((err) => console.log(error(`\n${icons.cross} Error: ${err.message}\n`)));
+  if (autoEdit) {
+    openInEditor(filePath)
+      .then(() => console.log(success(`\n${icons.check} Note saved\n`)))
+      .catch((err) => console.log(error(`\n${icons.cross} Error: ${err.message}\n`)));
+  }
+}
+
+/**
+ * Find a note by filename or pattern
+ * @param {string} pattern - Filename pattern to search for
+ * @returns {string|null} Full path to the note or null if not found
+ */
+function findNote(pattern) {
+  const types = ['daily', 'meetings', 'technical', 'learning'];
+
+  for (const type of types) {
+    const dirPath = path.join(getNotesDir(), type);
+    if (fs.existsSync(dirPath)) {
+      const files = fs.readdirSync(dirPath);
+
+      // Try exact match first
+      let file = files.find(f => f === pattern || f === `${pattern}.md`);
+
+      // Try case-insensitive match
+      if (!file) {
+        file = files.find(f =>
+          f.toLowerCase() === pattern.toLowerCase() ||
+          f.toLowerCase() === `${pattern.toLowerCase()}.md`
+        );
+      }
+
+      // Try partial match
+      if (!file) {
+        file = files.find(f => f.toLowerCase().includes(pattern.toLowerCase()));
+      }
+
+      if (file) {
+        return path.join(dirPath, file);
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Edit an existing note in the configured editor
+ * @param {string} notePattern - Note filename or pattern to edit
+ */
+async function editNote(notePattern) {
+  const notePath = findNote(notePattern);
+
+  if (!notePath) {
+    console.log(error(`\n${icons.cross} Note not found: ${notePattern}\n`));
+    console.log(info('Try: note list [type] to see available notes\n'));
+    process.exit(1);
+  }
+
+  console.log(info(`\n${icons.edit} Opening note in editor...\n`));
+  await openInEditor(notePath);
+  console.log(success(`${icons.check} Done!\n`));
 }
 
 /**
@@ -316,7 +406,7 @@ function listNotes(type = null) {
   console.log(bold(`\n${icons.note} Notes Overview\n`));
 
   types.forEach((noteType) => {
-    const dirPath = path.join(NOTES_DIR, noteType);
+    const dirPath = path.join(getNotesDir(), noteType);
     if (fs.existsSync(dirPath)) {
       const files = fs
         .readdirSync(dirPath)
@@ -369,7 +459,7 @@ function searchNotes(searchTerm) {
   const results = [];
 
   types.forEach((noteType) => {
-    const dirPath = path.join(NOTES_DIR, noteType);
+    const dirPath = path.join(getNotesDir(), noteType);
     if (fs.existsSync(dirPath)) {
       const files = fs
         .readdirSync(dirPath)
@@ -422,33 +512,49 @@ function searchNotes(searchTerm) {
   console.log('');
 }
 
-// CLI interface
-const args = process.argv.slice(2);
+// CLI interface (v3.0.0 - uses cleaned args without -g flag)
+const args = cleanArgs.slice(2);
 const command = args[0];
+const noEdit = args.includes('--no-edit');
 
 switch (command) {
   case 'daily': {
-    createDailyNote();
+    createDailyNote(!noEdit);
     break;
   }
 
   case 'meeting': {
-    const meetingTitle = args.slice(1).join(' ') || 'Team Meeting';
-    createMeetingNote(meetingTitle);
+    const meetingTitle = args.slice(1).filter(arg => arg !== '--no-edit').join(' ') || 'Team Meeting';
+    createMeetingNote(meetingTitle, !noEdit);
     break;
   }
 
   case 'tech':
   case 'technical': {
-    const techTitle = args.slice(1).join(' ') || 'Technical Decision';
-    createTechnicalNote(techTitle);
+    const techTitle = args.slice(1).filter(arg => arg !== '--no-edit').join(' ') || 'Technical Decision';
+    createTechnicalNote(techTitle, !noEdit);
     break;
   }
 
   case 'til':
   case 'learning': {
-    const tilTitle = args.slice(1).join(' ') || 'Today I Learned';
-    createLearningNote(tilTitle);
+    const tilTitle = args.slice(1).filter(arg => arg !== '--no-edit').join(' ') || 'Today I Learned';
+    createLearningNote(tilTitle, !noEdit);
+    break;
+  }
+
+  case 'edit': {
+    const notePattern = args.slice(1).join(' ');
+    if (!notePattern) {
+      console.log(error('\n Error: Note filename or pattern is required\n'));
+      console.log('Usage: note edit <filename|pattern>');
+      console.log('Example: note edit 2025-11-07');
+      console.log('         note edit ADR-001');
+      process.exit(1);
+    }
+    (async () => {
+      await editNote(notePattern);
+    })();
     break;
   }
 
@@ -471,85 +577,34 @@ switch (command) {
     break;
   }
 
-  case 'workspace': {
-    const subCommand = args[1];
-    const workspaceName = args[2];
-
-    switch (subCommand) {
-      case 'list': {
-        const workspaces = config.listWorkspaces();
-        const activeWorkspace = config.getActiveWorkspace();
-
-        console.log(`\n${bold('Workspaces:')}\n`);
-        Object.values(workspaces).forEach((ws) => {
-          /** @type {any} */ const workspace = ws;
-          const active =
-            workspace.name === activeWorkspace.name ? success('● active') : dim('○ inactive');
-          console.log(`  ${active} ${bold(workspace.name)}`);
-          console.log(`    ${dim(`Path: ${workspace.path}`)}`);
-          if (workspace.description) {
-            console.log(`    ${dim(`Description: ${workspace.description}`)}`);
-          }
-          console.log();
-        });
-        break;
-      }
-
-      case 'switch': {
-        if (!workspaceName) {
-          error('Usage: note workspace switch <name>');
-          process.exit(1);
-        }
-
-        const workspace = config.switchWorkspace(workspaceName);
-        if (workspace) {
-          success(`✓ Switched to workspace '${workspaceName}'`);
-          info(`  Notes: ${config.getNotesDir()}`);
-        } else {
-          error('Failed to switch workspace');
-          process.exit(1);
-        }
-        break;
-      }
-
-      default:
-        console.log(`
-${bold('Workspace Management')}
-
-${info('Usage:')}
-  note workspace list           List all workspaces
-  note workspace switch <name>  Switch to workspace
-
-${info('Examples:')}
-  note workspace list
-  note workspace switch project-x
-        `);
-    }
-    break;
-  }
-
   case 'config': {
     const subCommand = args[1];
 
     switch (subCommand) {
       case 'show': {
         const currentConfig = config.loadConfig();
-        const workspace = config.getActiveWorkspace();
 
-        console.log(`\n${bold('Configuration:')}\n`);
-        console.log(`${info('Platform:')} ${config.getPlatform()}`);
-        console.log(`${info('Config Dir:')} ${config.getConfigDir()}`);
-        console.log(`${info('Data Dir:')} ${config.getDataDir()}\n`);
+        try {
+          const workspace = config.resolveWorkspace(useGlobalFlag);
 
-        /** @type {any} */ const ws = workspace;
-        console.log(`${bold('Active Workspace:')} ${ws.name}`);
-        console.log(`${info('Notes Dir:')} ${config.getNotesDir()}\n`);
+          console.log(`\n${bold('Configuration (v3.0.0):')}\n`);
+          console.log(`${info('Platform:')} ${config.getPlatform()}`);
+          console.log(`${info('Config Dir:')} ${config.getConfigDir()}`);
+          console.log(`${info('Data Dir:')} ${config.getDataDir()}\n`);
 
-        console.log(`${bold('Preferences:')}`);
-        /** @type {any} */ const cfg = currentConfig;
-        Object.entries(cfg.preferences || {}).forEach(([key, value]) => {
-          console.log(`  ${dim(key)}: ${value}`);
-        });
+          console.log(`${bold('Workspace:')} ${workspace.mode}`);
+          console.log(`${info('Notes Dir:')} ${workspace.notesDir}\n`);
+
+          console.log(`${bold('Preferences:')}`);
+          /** @type {any} */ const cfg = currentConfig;
+          Object.entries(cfg.preferences || {}).forEach(([key, value]) => {
+            console.log(`  ${dim(key)}: ${value}`);
+          });
+        } catch (err) {
+          const e = /** @type {Error} */ (err);
+          error(`Cannot resolve workspace: ${e.message}`);
+          process.exit(1);
+        }
         console.log();
         break;
       }
@@ -618,32 +673,38 @@ ${info('Examples:')}
 
   default:
     console.log(`
-${bold('Note Management CLI')}
+${bold('Note Management CLI (v3.0.0)')}
 
 ${info('Usage:')}
-  note init [tasks-dir] [notes-dir]             Initialize local-work in current project
-  note daily                                    Create daily note for today
-  note meeting <title>                          Create meeting note
-  note tech <title>                             Create technical decision (ADR)
-  note til <title>                              Create learning note (TIL)
-  note list [type]                              List notes (all or by type)
-  note search <term>                            Search notes by term
-  note workspace <command>                      Manage workspaces
-  note config <command>                         Manage configuration
-  note open                                     Open notes directory
+  note [-g] init [tasks-dir] [notes-dir]        Initialize local-work in current project
+  note [-g] daily [--no-edit]                   Create daily note for today
+  note [-g] meeting <title> [--no-edit]         Create meeting note
+  note [-g] tech <title> [--no-edit]            Create technical decision (ADR)
+  note [-g] til <title> [--no-edit]             Create learning note (TIL)
+  note [-g] edit <filename|pattern>             Edit existing note
+  note [-g] list [type]                         List notes (all or by type)
+  note [-g] search <term>                       Search notes by term
+  note [-g] config <command>                    Manage configuration
+  note [-g] open                                Open notes directory
+
+${info('Workspace Model (Git-like):')}
+  By default, note uses local workspace (.local-work/ in current project)
+  Use -g or --global flag to work with global workspace instead
 
 ${info('Examples:')}
-  note init                                     # Use default ./tasks and ./notes
-  note init ./my-tasks ./my-notes               # Custom directories
-  note daily
+  note init                                     # Initialize local workspace
+  note -g daily                                 # Create daily note in global (opens in editor)
+  note daily --no-edit                          # Create without opening editor
   note meeting "Sprint Planning"
   note tech "Migration to Next.js 15"
   note til "React Server Components"
+  note edit 2025-11-07                          # Edit daily note by date
+  note edit ADR-001                             # Edit technical decision
   note list technical
   note search "authentication"
-  note workspace list
   note config show
-  note open
+  note -g open                                  # Open global notes directory
+  note open                                     # Open local notes directory
 
 ${info('Note Types:')} daily, meetings, technical, learning
     `);

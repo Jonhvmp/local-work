@@ -1,7 +1,8 @@
 // Utility functions for CLI scripts
 
 const fs = require('fs');
-const { exec } = require('child_process');
+const path = require('path');
+const { exec, execSync, spawn } = require('child_process');
 
 // ANSI color codes
 const colors = {
@@ -135,6 +136,7 @@ const icons = {
   warning: '!',
   error: 'X',
   success: '*',
+  edit: '✎',
 };
 
 // Date formatting
@@ -229,9 +231,9 @@ function getCurrentDateTime() {
 
 // Open file in editor
 /**
- * Open file in system editor
- * @param {string} filePath - Path to file to edit
- * @returns {Promise<void>} Promise that resolves when editor closes
+ * Open file in configured editor
+ * @param {string} filePath - Path to file to open
+ * @returns {Promise<void>}
  */
 function openInEditor(filePath) {
   return new Promise((resolve) => {
@@ -242,13 +244,73 @@ function openInEditor(filePath) {
       return;
     }
 
-    const editor = process.env.EDITOR || process.env.VISUAL || 'nano';
+    // Priority order for editors:
+    // 1. VS Code (code) - most common GUI editor
+    // 2. VS Code Insiders (code-insiders)
+    // 3. Sublime Text (subl)
+    // 4. Atom (atom)
+    // 5. User's EDITOR/VISUAL environment variable (if terminal editor)
+    // 6. nano (terminal fallback)
 
-    exec(`${editor} "${filePath}"`, (error) => {
-      // Always resolve, never reject
-      // File was already created successfully
-      resolve();
-    });
+    let editor = '';
+
+    // Try to find a GUI editor first (better UX for task/note editing)
+    const guiEditors = ['code', 'code-insiders', 'subl', 'atom', 'gedit', 'kate'];
+
+    for (const cmd of guiEditors) {
+      try {
+        execSync(`which ${cmd}`, { stdio: 'ignore' });
+        editor = cmd;
+        break;
+      } catch (e) {
+        // Command not found, try next
+      }
+    }
+
+    // If no GUI editor found, fallback to EDITOR/VISUAL env vars
+    if (!editor) {
+      editor = process.env.EDITOR || process.env.VISUAL || '';
+    }
+
+    // Final fallback to nano
+    if (!editor) {
+      editor = 'nano';
+    }
+
+    // Check if editor is a GUI app (code, subl, atom, etc)
+    // Extract basename if it's a full path (e.g., /usr/bin/code -> code)
+    const editorBasename = path.basename(editor);
+    const isGuiEditor = guiEditors.includes(editorBasename);
+
+    if (isGuiEditor) {
+      // For GUI editors, spawn process and return immediately
+      // Use --reuse-window for VS Code to open in current window
+      const isVSCode = editorBasename === 'code' || editorBasename === 'code-insiders';
+
+      // Convert to absolute path to ensure it works across different shells
+      const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
+      const args = isVSCode ? ['--reuse-window', absolutePath] : [absolutePath];
+
+      try {
+        const child = spawn(editor, args, {
+          detached: true,
+          stdio: 'ignore'
+        });
+
+        child.unref();
+        resolve();
+      } catch (error) {
+        // If spawn fails, try with exec as fallback
+        const editorCmd = isVSCode ? `${editor} --reuse-window "${absolutePath}"` : `${editor} "${absolutePath}"`;
+        exec(editorCmd, () => {});
+        setTimeout(resolve, 100);
+      }
+    } else {
+      // For terminal editors, wait for them to close
+      exec(`${editor} "${filePath}"`, (error) => {
+        resolve();
+      });
+    }
   });
 }
 

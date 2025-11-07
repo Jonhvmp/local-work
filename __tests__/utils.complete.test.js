@@ -149,8 +149,8 @@ This is the task description.`;
     });
 
     test('updateFrontmatter should add new field', () => {
-      const result = updateFrontmatter(sampleContent, 'assignee', 'John Doe');
-      expect(result).toContain('assignee: John Doe');
+      const result = updateFrontmatter(sampleContent, 'assignee', 'Jonh Alex');
+      expect(result).toContain('assignee: Jonh Alex');
     });
 
     test('updateFrontmatter should handle array values', () => {
