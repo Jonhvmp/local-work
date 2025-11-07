@@ -37,6 +37,7 @@ Thumbs.db
 # Build outputs (if any in future)
 dist/
 build/
+site/
 
 # Environment files (if any in future)
 .env
@@ -46,3 +47,6 @@ build/
 # Optional: local configuration files for development
 config/local.json
 .local/
+
+# Python ignore
+venv/
