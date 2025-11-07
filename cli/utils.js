@@ -249,16 +249,27 @@ function openInEditor(filePath) {
     // 2. VS Code Insiders (code-insiders)
     // 3. Sublime Text (subl)
     // 4. Atom (atom)
-    // 5. User's EDITOR/VISUAL environment variable (if terminal editor)
-    // 6. nano/notepad (platform-specific fallback)
+    // 5. TextEdit/Notepad++ (platform-specific)
+    // 6. User's EDITOR/VISUAL environment variable (if terminal editor)
+    // 7. nano/notepad (platform-specific fallback)
 
     let editor = '';
 
     // Try to find a GUI editor first (better UX for task/note editing)
-    const guiEditors = ['code', 'code-insiders', 'subl', 'atom', 'gedit', 'kate', 'notepad++'];
+    const isMac = process.platform === 'darwin';
+    const isWindows = process.platform === 'win32';
+
+    // Platform-specific GUI editors
+    const guiEditors = ['code', 'code-insiders', 'subl', 'atom'];
+    if (isMac) {
+      guiEditors.push('mate'); // TextMate
+    } else if (isWindows) {
+      guiEditors.push('notepad++');
+    } else {
+      guiEditors.push('gedit', 'kate'); // Linux
+    }
 
     // Use 'where' on Windows, 'which' on Unix-like systems
-    const isWindows = process.platform === 'win32';
     const whichCmd = isWindows ? 'where' : 'which';
 
     for (const cmd of guiEditors) {
@@ -276,9 +287,16 @@ function openInEditor(filePath) {
       editor = process.env.EDITOR || process.env.VISUAL || '';
     }
 
-    // Final fallback to platform-specific default
+    // Final fallback to platform-specific default or system opener
     if (!editor) {
-      editor = isWindows ? 'notepad' : 'nano';
+      if (isMac) {
+        // On macOS, use 'open' to open with default text editor
+        editor = 'open';
+      } else if (isWindows) {
+        editor = 'notepad';
+      } else {
+        editor = 'nano';
+      }
     }
 
     // Check if editor is a GUI app (code, subl, atom, etc)
@@ -293,29 +311,48 @@ function openInEditor(filePath) {
 
       // Convert to absolute path to ensure it works across different shells
       const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
-      const args = isVSCode ? ['--reuse-window', absolutePath] : [absolutePath];
 
-      try {
-        const child = spawn(editor, args, {
-          detached: true,
-          stdio: 'ignore',
-        });
-
-        child.unref();
-        resolve();
-      } catch (_error) {
-        // If spawn fails, try with exec as fallback
+      // On Windows, use exec instead of spawn for better PATH resolution
+      if (isWindows) {
         const editorCmd = isVSCode
-          ? `${editor} --reuse-window "${absolutePath}"`
-          : `${editor} "${absolutePath}"`;
-        exec(editorCmd, () => {});
+          ? `"${editor}" --reuse-window "${absolutePath}"`
+          : `"${editor}" "${absolutePath}"`;
+        exec(editorCmd, (_error) => {
+          // Ignore errors, file might open in background
+        });
         /* global setTimeout */
         setTimeout(resolve, 100);
+      } else {
+        // On Unix-like systems, spawn works well
+        const args = isVSCode ? ['--reuse-window', absolutePath] : [absolutePath];
+
+        try {
+          const child = spawn(editor, args, {
+            detached: true,
+            stdio: 'ignore',
+          });
+
+          child.unref();
+          resolve();
+        } catch (_error) {
+          // If spawn fails, try with exec as fallback
+          const editorCmd = isVSCode
+            ? `${editor} --reuse-window "${absolutePath}"`
+            : `${editor} "${absolutePath}"`;
+          exec(editorCmd, () => {});
+          setTimeout(resolve, 100);
+        }
       }
     } else if (isWindows && (editor === 'notepad' || editor === 'notepad++')) {
       // For Windows notepad, use start command to open in background
       const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
       exec(`start "" "${absolutePath}"`, (_error) => {
+        resolve();
+      });
+    } else if (isMac && editor === 'open') {
+      // For macOS, use open command with -t flag for text editor
+      const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
+      exec(`open -t "${absolutePath}"`, (_error) => {
         resolve();
       });
     } else {
