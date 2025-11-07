@@ -53,7 +53,7 @@ describe('Utils Module', () => {
     });
 
     test('formatDate should handle date strings', () => {
-      const oldDate = '2024-01-15';
+      const oldDate = '2025-01-15';
       const result = formatDate(oldDate);
       // For old dates, should return original string or relative format
       expect(typeof result).toBe('string');

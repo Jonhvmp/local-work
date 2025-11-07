@@ -23,6 +23,55 @@ const {
 const config = require('./config');
 
 // ============================================================================
+// Early help flag handling (must be before workspace initialization)
+// ============================================================================
+
+// Check for help flags before any workspace operations
+if (
+  process.argv.includes('-h') ||
+  process.argv.includes('--help') ||
+  process.argv.includes('help')
+) {
+  console.log(`
+${bold('Note Management CLI (v3.0.0)')}
+
+${info('Usage:')}
+  note [-g] init [tasks-dir] [notes-dir]        Initialize local-work in current project
+  note [-g] daily [--no-edit]                   Create daily note for today
+  note [-g] meeting <title> [--no-edit]         Create meeting note
+  note [-g] tech <title> [--no-edit]            Create technical decision (ADR)
+  note [-g] til <title> [--no-edit]             Create learning note (TIL)
+  note [-g] edit <filename|pattern>             Edit existing note
+  note [-g] list [type]                         List notes (all or by type)
+  note [-g] search <term>                       Search notes by term
+  note [-g] config <command>                    Manage configuration
+  note [-g] open                                Open notes directory
+
+${info('Workspace Model (Git-like):')}
+  By default, note uses local workspace (.local-work/ in current project)
+  Use -g or --global flag to work with global workspace instead
+
+${info('Examples:')}
+  note init                                     # Initialize local workspace
+  note -g daily                                 # Create daily note in global (opens in editor)
+  note daily --no-edit                          # Create without opening editor
+  note meeting "Sprint Planning"
+  note tech "Migration to Next.js 15"
+  note til "React Server Components"
+  note edit 2025-11-07                          # Edit daily note by date
+  note edit ADR-001                             # Edit technical decision
+  note list technical
+  note search "authentication"
+  note config show
+  note -g open                                  # Open global notes directory
+  note open                                     # Open local notes directory
+
+${info('Note Types:')} daily, meetings, technical, learning
+  `);
+  process.exit(0);
+}
+
+// ============================================================================
 // Parse CLI flags (v3.0.0 - Git-like model)
 // ============================================================================
 

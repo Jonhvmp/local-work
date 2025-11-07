@@ -117,7 +117,7 @@ describe('Complete Utils Coverage', () => {
 title: Test Task
 status: backlog
 priority: high
-created: 2024-01-15
+created: 2025-01-15
 ---
 
 # Task Content
@@ -129,7 +129,7 @@ This is the task description.`;
       expect(result.title).toBe('Test Task');
       expect(result.status).toBe('backlog');
       expect(result.priority).toBe('high');
-      expect(result.created).toBe('2024-01-15');
+      expect(result.created).toBe('2025-01-15');
     });
 
     test('parseFrontmatter should handle missing frontmatter', () => {

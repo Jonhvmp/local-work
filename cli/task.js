@@ -28,6 +28,57 @@ const {
 const config = require('./config');
 
 // ============================================================================
+// Early help flag handling (must be before workspace initialization)
+// ============================================================================
+
+// Check for help flags before any workspace operations
+if (
+  process.argv.includes('-h') ||
+  process.argv.includes('--help') ||
+  process.argv.includes('help')
+) {
+  console.log(`
+${bold('Task Management CLI (v3.0.0)')}
+
+${info('Usage:')}
+  task [-g] init [tasks-dir] [notes-dir]        Initialize local-work in current project
+  task [-g] create <title>                      Create new task in backlog
+  task [-g] start <id>                          Move task to active
+  task [-g] complete <id>                       Mark task as completed
+  task [-g] archive <id>                        Archive task
+  task [-g] edit <id>                           Edit task in editor
+  task [-g] update <id> <field> <value>         Update task field
+  task [-g] list [dir]                          List tasks in directory
+  task [-g] search <term>                       Search tasks by term
+  task [-g] stats [dir]                         Show task statistics
+  task [-g] config <command>                    Manage configuration
+  task [-g] open                                Open tasks directory
+
+${info('Workspace Model (Git-like):')}
+  By default, task uses local workspace (.local-work/ in current project)
+  Use -g or --global flag to work with global workspace instead
+
+${info('Task Workflow:')}
+  backlog → active → completed → archived
+
+${info('Examples:')}
+  task init                                     # Initialize local workspace
+  task create "Implement user authentication"
+  task start TASK-001
+  task update TASK-001 priority high
+  task complete TASK-001
+  task list active
+  task search "authentication"
+  task stats
+  task -g create "Global task"                  # Use global workspace
+  task config show
+
+${info('Directories:')} backlog, active, completed, archived
+  `);
+  process.exit(0);
+}
+
+// ============================================================================
 // Parse CLI flags (v3.0.0 - Git-like model)
 // ============================================================================
 

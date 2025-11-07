@@ -167,14 +167,14 @@ tags: [javascript, async]
     ensureDir(dailyDir);
 
     // Create multiple daily notes
-    ['2024-01-15', '2024-01-16', '2024-01-17'].forEach((date) => {
+    ['2025-01-15', '2025-01-16', '2025-01-17'].forEach((date) => {
       const content = `---\ntype: daily\ndate: ${date}\n---\n\n# Daily`;
       fs.writeFileSync(path.join(dailyDir, `${date}.md`), content);
     });
 
     const files = fs.readdirSync(dailyDir).filter((f) => f.endsWith('.md'));
     expect(files).toHaveLength(3);
-    expect(files.sort()).toEqual(['2024-01-15.md', '2024-01-16.md', '2024-01-17.md']);
+    expect(files.sort()).toEqual(['2025-01-15.md', '2025-01-16.md', '2025-01-17.md']);
   });
 
   test('should search notes by keyword', () => {
@@ -230,7 +230,7 @@ tags: [javascript, async]
     const noteContent = `---
 type: meeting
 title: Weekly Sync
-date: 2024-01-15
+date: 2025-01-15
 attendees: [Alice, Bob, Charlie]
 tags: [team, weekly]
 ---
@@ -240,7 +240,7 @@ tags: [team, weekly]
     const frontmatter = parseFrontmatter(noteContent);
     expect(frontmatter.type).toBe('meeting');
     expect(frontmatter.title).toBe('Weekly Sync');
-    expect(frontmatter.date).toBe('2024-01-15');
+    expect(frontmatter.date).toBe('2025-01-15');
   });
 
   test('should handle note templates correctly', () => {
@@ -261,7 +261,7 @@ date: {{date}}
     expect(dailyTemplate).toContain('type: daily');
     expect(dailyTemplate).toContain('{{date}}');
 
-    const date = '2024-01-15';
+    const date = '2025-01-15';
     const filled = dailyTemplate.replace(/{{date}}/g, date);
     expect(filled).toContain(`date: ${date}`);
     expect(filled).toContain(`# Daily Note - ${date}`);
