@@ -1,0 +1,87 @@
+site_name: local-work
+site_description: Professional CLI tools for task and note management
+site_author: Jonhvmp
+site_url: https://jonhvmp.github.io/local-work
+
+repo_name: jonhvmp/local-work
+repo_url: https://github.com/jonhvmp/local-work
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - Configuration: getting-started/configuration.md
+      - Quick Start: getting-started/quick-start.md
+  - User Guide:
+      - Task Management: user-guide/tasks.md
+      - Note Taking: user-guide/notes.md
+  - CLI Reference:
+      - task CLI: reference/task-cli.md
+      - note CLI: reference/note-cli.md
+  - Migration:
+      - v2 to v3: migration/v2-to-v3.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/jonhvmp/local-work
+  version:
+    provider: mike
