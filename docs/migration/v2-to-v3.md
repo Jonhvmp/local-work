@@ -1,10 +1,10 @@
-# Migration Guide: v2.x to v3.0.0
+# Migration Guide: v2.x to v3.0.2
 
-Guide for migrating from local-work v2.x to v3.0.0.
+Guide for migrating from local-work v2.x to v3.0.2.
 
 ---
 
-## :material-new-box: What's New in v3.0.0
+## :material-new-box: What's New in v3.0.2
 
 ### Major Changes
 
@@ -29,7 +29,7 @@ Guide for migrating from local-work v2.x to v3.0.0.
 └── notes/
 ```
 
-**v3.0.0:**
+**v3.0.2:**
 
 **Local workspace:**
 
@@ -61,7 +61,7 @@ Guide for migrating from local-work v2.x to v3.0.0.
 ~/.local-work-config.json
 ```
 
-**v3.0.0:**
+**v3.0.2:**
 
 - **Linux:** `~/.config/local-work/config.json`
 - **macOS:** `~/Library/Preferences/local-work/config.json`
@@ -71,7 +71,7 @@ Guide for migrating from local-work v2.x to v3.0.0.
 
 **v2.x:** All commands used single global directory
 
-**v3.0.0:**
+**v3.0.2:**
 
 - By default: Uses **local** workspace (`.local-work/` in current project)
 - With `-g` flag: Uses **global** workspace (platform-specific)
@@ -82,10 +82,10 @@ Guide for migrating from local-work v2.x to v3.0.0.
 # v2.x - always global
 task new "Fix bug"
 
-# v3.0.0 - local by default
+# v3.0.2 - local by default
 task new "Fix bug"              # Creates in .local-work/
 
-# v3.0.0 - explicit global
+# v3.0.2 - explicit global
 task -g new "Personal task"     # Creates in global workspace
 ```
 
@@ -93,7 +93,7 @@ task -g new "Personal task"     # Creates in global workspace
 
 **v2.x:** Tasks stored in flat structure
 
-**v3.0.0:** Tasks organized by status directories:
+**v3.0.2:** Tasks organized by status directories:
 
 - `backlog/` - New tasks
 - `active/` - In-progress tasks
@@ -104,7 +104,7 @@ task -g new "Personal task"     # Creates in global workspace
 
 **v2.x:** Generic notes
 
-**v3.0.0:** Four distinct note types with templates:
+**v3.0.2:** Four distinct note types with templates:
 
 - `daily` - Daily notes
 - `meeting` - Meeting notes
@@ -113,7 +113,7 @@ task -g new "Personal task"     # Creates in global workspace
 
 ### 6. Command Changes
 
-| v2.x          | v3.0.0                        | Notes                              |
+| v2.x          | v3.0.2                        | Notes                              |
 | ------------- | ----------------------------- | ---------------------------------- |
 | `task create` | `task new`                    | New command name                   |
 | `task finish` | `task done`                   | New command name, alias `complete` |
@@ -141,19 +141,19 @@ cp -r ~/local-work/notes ~/local-work-backup-notes
 cp ~/.local-work-config.json ~/local-work-backup-config.json
 ```
 
-### Step 2: Install v3.0.0
+### Step 2: Install v3.0.2
 
 Update to latest version:
 
 ```bash
-npm install -g local-work@3.0.0
+npm install -g local-work@3.0.2
 ```
 
 Verify installation:
 
 ```bash
 task --version
-# Should show: 3.0.0
+# Should show: 3.0.2
 ```
 
 ### Step 3: Initialize Workspace
@@ -228,7 +228,7 @@ Transfer preferences to new config location:
 # View old config
 cat ~/.local-work-config.json
 
-# Set preferences in v3.0.0
+# Set preferences in v3.0.2
 task config set editor code
 task config set autoOpen true
 task config set archiveDays 30
@@ -239,7 +239,7 @@ task config show
 
 ### Step 5: Update Task Files
 
-Task files may need frontmatter updates for v3.0.0 features:
+Task files may need frontmatter updates for v3.0.2 features:
 
 **v2.x task:**
 
@@ -253,7 +253,7 @@ status: todo
 # Task content
 ```
 
-**v3.0.0 task (enhanced):**
+**v3.0.2 task (enhanced):**
 
 ```markdown
 ---
@@ -340,7 +340,7 @@ task create "Daily review"
 note create "Today's notes"
 ```
 
-**Updated script (v3.0.0):**
+**Updated script (v3.0.2):**
 
 ```bash
 #!/bin/bash
@@ -406,7 +406,7 @@ Complete migration script:
 
 set -e
 
-echo "Local-work v2.x to v3.0.0 Migration Script"
+echo "Local-work v2.x to v3.0.2 Migration Script"
 echo "==========================================="
 
 # Backup
@@ -416,9 +416,9 @@ cp -r ~/local-work/* ~/local-work-v2-backup/
 cp ~/.local-work-config.json ~/local-work-v2-backup/config.json
 echo "✓ Backup created at ~/local-work-v2-backup"
 
-# Install v3.0.0
-echo "Installing v3.0.0..."
-npm install -g local-work@3.0.0
+# Install v3.0.2
+echo "Installing v3.0.2..."
+npm install -g local-work@3.0.2
 echo "✓ Installed $(task --version)"
 
 # Migrate to global workspace
@@ -571,7 +571,7 @@ If you encounter issues during migration:
 If you need to revert:
 
 ```bash
-# Uninstall v3.0.0
+# Uninstall v3.0.2
 npm uninstall -g local-work
 
 # Install v2.x
@@ -590,6 +590,6 @@ task --version
 ## :material-arrow-right: See Also
 
 - [Configuration Guide](../getting-started/configuration.md) - Workspace model details
-- [Quick Start](../getting-started/quick-start.md) - Get started with v3.0.0
+- [Quick Start](../getting-started/quick-start.md) - Get started with v3.0.2
 - [Task CLI Reference](../reference/task-cli.md) - All task commands
 - [Note CLI Reference](../reference/note-cli.md) - All note commands

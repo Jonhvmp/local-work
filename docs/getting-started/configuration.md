@@ -1,6 +1,6 @@
 # Configuration
 
-local-work v3.0.0 uses a **Git-like workspace model** with both local and global configurations.
+local-work v3.0.2 uses a **Git-like workspace model** with both local and global configurations.
 
 ---
 
@@ -80,7 +80,7 @@ The `config.json` file contains:
 
 ```json
 {
-  "version": "3.0.0",
+  "version": "3.0.2",
   "global": {
     "tasksDir": "/home/user/.local/share/local-work/tasks",
     "notesDir": "/home/user/.local/share/local-work/notes"
@@ -133,7 +133,7 @@ task config show
 Output example:
 
 ```
-Configuration (v3.0.0):
+Configuration (v3.0.2):
 
 Platform: linux
 Config Dir: /home/user/.config/local-work
