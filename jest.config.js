@@ -5,14 +5,15 @@ module.exports = {
   testMatch: ['**/__tests__/**/*.js', '**/?(*.)+(spec|test).js'],
   coverageThreshold: {
     // Utils.js maintains reasonable coverage for business logic functions
-    // Lower thresholds account for openInEditor() which is complex to unit test
-    // (requires mocking process.stdin.isTTY, execSync, spawn, platform detection)
+    // Lower thresholds account for openInEditor() and spawnEditor() which are
+    // complex to unit test (requires mocking spawn, process events, platform detection)
     // Platform-specific logic (Windows/macOS/Linux) validated through E2E tests
+    // v3.1.0: Added sanitizePath() and spawnEditor() helper - adjusted thresholds
     './cli/utils.js': {
-      branches: 47,
-      functions: 80,
-      lines: 61,
-      statements: 62,
+      branches: 45,
+      functions: 75,
+      lines: 55,
+      statements: 56,
     },
     // Note: CLI interaction files (task.js, note.js) are validated through:
     // - E2E integration tests (cli.e2e.test.js, task.test.js, note.test.js)

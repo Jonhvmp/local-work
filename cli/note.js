@@ -174,6 +174,18 @@ function createMeetingNote(title, autoEdit = true) {
   const fileName = `${date}-${slug}.md`;
   const filePath = path.join(getNotesDir(), 'meetings', fileName);
 
+  // Check if file already exists to prevent accidental overwrite
+  if (fs.existsSync(filePath)) {
+    console.log(warning(`\n${icons.warning} Meeting note already exists!`));
+    console.log(info(`${icons.note} ${title}`));
+    console.log(dim(`   Location: ${filePath}`));
+    console.log(info(`\nUse 'note edit ${fileName}' to edit the existing note\n`));
+    if (autoEdit) {
+      openInEditor(filePath);
+    }
+    return;
+  }
+
   const template = `---
 date: ${date}
 type: meeting
@@ -713,8 +725,8 @@ ${info('Examples:')}
   }
 
   case 'init': {
-    const tasksDir = args[0] || './tasks';
-    const notesDir = args[1] || './notes';
+    const tasksDir = args[1] || './tasks';
+    const notesDir = args[2] || './notes';
 
     console.log(`${info('Initializing local-work in current project...')}\n`);
 

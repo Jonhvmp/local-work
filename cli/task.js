@@ -123,15 +123,88 @@ if (
 } /**
  * Get next available task ID
  * Scans all task directories to find the highest ID and returns the next sequential number
+ * Uses a lock file mechanism to prevent race conditions in concurrent task creation
  * @returns {string} Next task ID in format "XXX" (e.g., "001", "042")
  */
 function getNextTaskId() {
+  const tasksDir = getTasksDir();
+  const lockFile = path.join(tasksDir, '.task-id.lock');
+  const idFile = path.join(tasksDir, '.last-task-id');
+
+  // Simple file-based locking with retry mechanism
+  const maxRetries = 10;
+  const retryDelay = 50; // ms
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      // Try to create lock file exclusively
+      fs.writeFileSync(lockFile, String(process.pid), { flag: 'wx' });
+
+      try {
+        // Read current max ID from all directories
+        /** @type {number[]} */
+        const allTasks = [];
+        const dirs = ['active', 'backlog', 'completed', 'archived'];
+
+        dirs.forEach((dir) => {
+          const dirPath = path.join(tasksDir, dir);
+          if (fs.existsSync(dirPath)) {
+            const files = fs.readdirSync(dirPath);
+            files.forEach((file) => {
+              const match = file.match(/^TASK-(\d+)/);
+              if (match) {
+                allTasks.push(parseInt(match[1]));
+              }
+            });
+          }
+        });
+
+        // Also check stored last ID (in case files were deleted)
+        let lastStoredId = 0;
+        if (fs.existsSync(idFile)) {
+          const storedId = parseInt(fs.readFileSync(idFile, 'utf8').trim());
+          if (!isNaN(storedId)) {
+            lastStoredId = storedId;
+          }
+        }
+
+        const maxFromFiles = allTasks.length > 0 ? Math.max(...allTasks) : 0;
+        const newId = Math.max(maxFromFiles, lastStoredId) + 1;
+
+        // Store the new ID atomically
+        fs.writeFileSync(idFile, String(newId));
+
+        return String(newId).padStart(3, '0');
+      } finally {
+        // Always remove lock file
+        try {
+          fs.unlinkSync(lockFile);
+        } catch {
+          // Ignore errors removing lock
+        }
+      }
+    } catch (err) {
+      const error = /** @type {NodeJS.ErrnoException} */ (err);
+      if (error.code === 'EEXIST') {
+        // Lock file exists, wait and retry
+        const start = Date.now();
+        while (Date.now() - start < retryDelay) {
+          // Busy wait (simple approach for short delays)
+        }
+        continue;
+      }
+      // Other error, fall back to simple method
+      break;
+    }
+  }
+
+  // Fallback: simple method without locking (for backward compatibility)
   /** @type {number[]} */
   const allTasks = [];
   const dirs = ['active', 'backlog', 'completed', 'archived'];
 
   dirs.forEach((dir) => {
-    const dirPath = path.join(getTasksDir(), dir);
+    const dirPath = path.join(tasksDir, dir);
     if (fs.existsSync(dirPath)) {
       const files = fs.readdirSync(dirPath);
       files.forEach((file) => {
@@ -435,14 +508,20 @@ async function editTask(taskId) {
 
   console.log(info(`\n${icons.edit} Opening task in editor...\n`));
 
+  // Store original content to detect changes
+  const originalContent = fs.readFileSync(task.path, 'utf8');
+
   await openInEditor(task.path);
 
-  // Update the 'updated' field
-  let content = fs.readFileSync(task.path, 'utf8');
-  content = updateFrontmatter(content, 'updated', getCurrentDate());
-  fs.writeFileSync(task.path, content);
-
-  console.log(success(`\n${icons.check} Done!\n`));
+  // Only update 'updated' field if content actually changed
+  const newContent = fs.readFileSync(task.path, 'utf8');
+  if (newContent !== originalContent) {
+    const updatedContent = updateFrontmatter(newContent, 'updated', getCurrentDate());
+    fs.writeFileSync(task.path, updatedContent);
+    console.log(success(`\n${icons.check} Task updated!\n`));
+  } else {
+    console.log(info(`\n${icons.info} No changes made\n`));
+  }
 }
 
 /**
@@ -450,8 +529,10 @@ async function editTask(taskId) {
  * @param {string} searchTerm - Search query (searches in title, assignee, and tags)
  * @returns {Array<{id: string, title: string, status: string, priority: string, assignee: string, file: string, path: string}>} Array of matching tasks
  */
-function searchTasks(searchTerm) {
-  const dirs = ['active', 'backlog', 'completed'];
+function searchTasks(searchTerm, includeArchived = false) {
+  const dirs = includeArchived
+    ? ['active', 'backlog', 'completed', 'archived']
+    : ['active', 'backlog', 'completed'];
   /** @type {Array<{id: string, title: string, status: string, priority: string, assignee: string, file: string, path: string}>} */
   const results = [];
 
@@ -586,11 +667,13 @@ function getStats() {
         }
 
         if (meta.estimated) {
-          stats.totalEstimated += parseTime(String(meta.estimated));
+          const estimated = parseTime(String(meta.estimated));
+          if (estimated !== null) stats.totalEstimated += estimated;
         }
 
         if (meta.actual) {
-          stats.totalActual += parseTime(String(meta.actual));
+          const actual = parseTime(String(meta.actual));
+          if (actual !== null) stats.totalActual += actual;
         }
       });
     }

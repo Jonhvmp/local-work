@@ -71,20 +71,26 @@ describe('Config Module - Directory Resolution', () => {
 
     it('should use XDG_CONFIG_HOME if set', () => {
       process.env.XDG_CONFIG_HOME = '/custom/config';
-      expect(config.getConfigDir()).toBe('/custom/config/local-work');
+      expect(path.normalize(config.getConfigDir())).toBe(
+        path.normalize('/custom/config/local-work')
+      );
     });
 
     it('should default to ~/.config if XDG_CONFIG_HOME not set', () => {
-      expect(config.getConfigDir()).toBe('/home/testuser/.config/local-work');
+      expect(path.normalize(config.getConfigDir())).toBe(
+        path.normalize('/home/testuser/.config/local-work')
+      );
     });
 
     it('should use XDG_DATA_HOME if set', () => {
       process.env.XDG_DATA_HOME = '/custom/data';
-      expect(config.getDataDir()).toBe('/custom/data/local-work');
+      expect(path.normalize(config.getDataDir())).toBe(path.normalize('/custom/data/local-work'));
     });
 
     it('should default to ~/.local/share if XDG_DATA_HOME not set', () => {
-      expect(config.getDataDir()).toBe('/home/testuser/.local/share/local-work');
+      expect(path.normalize(config.getDataDir())).toBe(
+        path.normalize('/home/testuser/.local/share/local-work')
+      );
     });
   });
 
@@ -94,11 +100,15 @@ describe('Config Module - Directory Resolution', () => {
     });
 
     it('should use ~/Library/Application Support for config', () => {
-      expect(config.getConfigDir()).toBe('/home/testuser/Library/Application Support/local-work');
+      expect(path.normalize(config.getConfigDir())).toBe(
+        path.normalize('/home/testuser/Library/Application Support/local-work')
+      );
     });
 
     it('should use ~/Library/Application Support for data', () => {
-      expect(config.getDataDir()).toBe('/home/testuser/Library/Application Support/local-work');
+      expect(path.normalize(config.getDataDir())).toBe(
+        path.normalize('/home/testuser/Library/Application Support/local-work')
+      );
     });
   });
 
@@ -125,8 +135,12 @@ describe('Config Module - Directory Resolution', () => {
     });
 
     it('should fallback to homedir/AppData if env vars not set', () => {
-      expect(config.getConfigDir()).toBe('/home/testuser/AppData/Roaming/local-work');
-      expect(config.getDataDir()).toBe('/home/testuser/AppData/Local/local-work');
+      expect(path.normalize(config.getConfigDir())).toBe(
+        path.normalize('/home/testuser/AppData/Roaming/local-work')
+      );
+      expect(path.normalize(config.getDataDir())).toBe(
+        path.normalize('/home/testuser/AppData/Local/local-work')
+      );
     });
   });
 });
