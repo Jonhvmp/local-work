@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { exec, execSync, spawn } = require('child_process');
+const { execSync, spawn } = require('child_process');
 
 // ANSI color codes
 const colors = {
@@ -149,7 +149,7 @@ function formatDate(dateString) {
   const date = new Date(dateString);
   const now = new Date();
   const diffTime = Math.abs(now.getTime() - date.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) return 'today';
   if (diffDays === 1) return 'yesterday';
@@ -163,11 +163,13 @@ function formatDate(dateString) {
 /**
  * Parse time string to hours
  * @param {string} timeStr - Time string (e.g., "2h", "30m", "1.5h")
- * @returns {number} Time in hours
+ * @returns {number|null} Time in hours, or null if invalid format
  */
 function parseTime(timeStr) {
+  if (!timeStr || typeof timeStr !== 'string') return null;
+
   const match = timeStr.match(/^(\d+\.?\d*)([hm])$/);
-  if (!match) return 0;
+  if (!match) return null;
 
   const value = parseFloat(match[1]);
   const unit = match[2];
@@ -231,16 +233,46 @@ function getCurrentDateTime() {
 
 // Open file in editor
 /**
+ * Sanitize file path to prevent shell injection
+ * @param {string} filePath - Path to sanitize
+ * @returns {string} Sanitized path
+ */
+function sanitizePath(filePath) {
+  // Reject paths with dangerous characters that could be used for injection
+  const dangerousChars = /[;&|`$(){}[\]<>!]/;
+  if (dangerousChars.test(filePath)) {
+    throw new Error(`Invalid file path: contains potentially dangerous characters`);
+  }
+  // Normalize the path to remove any .. traversals and ensure it's absolute
+  return path.resolve(filePath);
+}
+
+/**
  * Open file in configured editor
  * @param {string} filePath - Path to file to open
  * @returns {Promise<void>}
  */
 function openInEditor(filePath) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     // Check if we have a TTY (interactive terminal)
     if (!process.stdin.isTTY) {
       // Not in interactive mode, skip opening editor silently
       resolve();
+      return;
+    }
+
+    // Sanitize the file path to prevent shell injection
+    let absolutePath;
+    try {
+      absolutePath = sanitizePath(filePath);
+    } catch (err) {
+      reject(err);
+      return;
+    }
+
+    // Verify the file exists
+    if (!fs.existsSync(absolutePath)) {
+      reject(new Error(`File not found: ${absolutePath}`));
       return;
     }
 
@@ -258,6 +290,9 @@ function openInEditor(filePath) {
     // Try to find a GUI editor first (better UX for task/note editing)
     const isMac = process.platform === 'darwin';
     const isWindows = process.platform === 'win32';
+
+    // Check if we're running inside VS Code's integrated terminal
+    const isInsideVSCode = process.env.TERM_PROGRAM === 'vscode';
 
     // Platform-specific GUI editors
     const guiEditors = ['code', 'code-insiders', 'subl', 'atom'];
@@ -277,7 +312,7 @@ function openInEditor(filePath) {
         execSync(`${whichCmd} ${cmd}`, { stdio: 'ignore' });
         editor = cmd;
         break;
-      } catch (_e) {
+      } catch {
         // Command not found, try next
       }
     }
@@ -306,60 +341,74 @@ function openInEditor(filePath) {
 
     if (isGuiEditor) {
       // For GUI editors, spawn process and return immediately
-      // Use --reuse-window for VS Code to open in current window
       const isVSCode = editorBasename === 'code' || editorBasename === 'code-insiders';
 
-      // Convert to absolute path to ensure it works across different shells
-      const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
-
-      // On Windows, use exec instead of spawn for better PATH resolution
-      if (isWindows) {
-        const editorCmd = isVSCode
-          ? `"${editor}" --reuse-window "${absolutePath}"`
-          : `"${editor}" "${absolutePath}"`;
-        exec(editorCmd, (_error) => {
-          // Ignore errors, file might open in background
+      /**
+       * Helper function to spawn editor with error handling
+       * @param {string} cmd - Command to execute
+       * @param {string[]} args - Arguments for the command
+       * @param {Function|null} fallbackFn - Fallback function if spawn fails
+       */
+      const spawnEditor = (cmd, args, fallbackFn) => {
+        const child = spawn(cmd, args, {
+          detached: true,
+          stdio: 'ignore',
+          shell: false, // Security: don't use shell
         });
-        /* global setTimeout */
-        setTimeout(resolve, 100);
-      } else {
-        // On Unix-like systems, spawn works well
-        const args = isVSCode ? ['--reuse-window', absolutePath] : [absolutePath];
 
-        try {
-          const child = spawn(editor, args, {
-            detached: true,
-            stdio: 'ignore',
-          });
-
-          child.unref();
+        child.on('error', () => {
+          // If spawn fails (ENOENT), try fallback
+          if (fallbackFn) {
+            fallbackFn();
+          }
           resolve();
-        } catch (_error) {
-          // If spawn fails, try with exec as fallback
-          const editorCmd = isVSCode
-            ? `${editor} --reuse-window "${absolutePath}"`
-            : `${editor} "${absolutePath}"`;
-          exec(editorCmd, () => {});
-          setTimeout(resolve, 100);
-        }
+        });
+
+        child.unref();
+        resolve();
+      };
+
+      // Fallback function for Windows
+      const windowsFallback = () => {
+        // Use cmd /c start to open with default application
+        const fallbackChild = spawn('cmd', ['/c', 'start', '""', absolutePath], {
+          stdio: 'ignore',
+          shell: false,
+        });
+        fallbackChild.on('error', () => {}); // Ignore fallback errors
+      };
+
+      // When inside VS Code terminal, use spawn without --reuse-window
+      // as the file will automatically open in the current VS Code instance
+      if (isInsideVSCode && isVSCode) {
+        // Inside VS Code terminal - just open the file, it will use current window
+        spawnEditor(editor, [absolutePath], isWindows ? windowsFallback : null);
+        return;
       }
+
+      // Outside VS Code terminal - use --reuse-window flag
+      const args = isVSCode ? ['--reuse-window', absolutePath] : [absolutePath];
+      spawnEditor(editor, args, isWindows ? windowsFallback : null);
+      return;
     } else if (isWindows && (editor === 'notepad' || editor === 'notepad++')) {
-      // For Windows notepad, use start command to open in background
-      const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
-      exec(`start "" "${absolutePath}"`, (_error) => {
-        resolve();
+      // For Windows notepad, use spawn instead of exec for security
+      spawn('cmd', ['/c', 'start', '', absolutePath], {
+        stdio: 'ignore',
+        shell: false,
       });
+      resolve();
     } else if (isMac && editor === 'open') {
-      // For macOS, use open command with -t flag for text editor
-      const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(filePath);
-      exec(`open -t "${absolutePath}"`, (_error) => {
-        resolve();
-      });
+      // For macOS, use spawn with -t flag for text editor
+      spawn('open', ['-t', absolutePath], { stdio: 'ignore' });
+      resolve();
     } else {
-      // For terminal editors, wait for them to close
-      exec(`${editor} "${filePath}"`, (_error) => {
-        resolve();
+      // For terminal editors, use spawn and wait for them to close
+      const child = spawn(editor, [absolutePath], {
+        stdio: 'inherit', // Connect to terminal for interactive editors
+        shell: false,
       });
+      child.on('close', () => resolve());
+      child.on('error', () => resolve());
     }
   });
 }
@@ -417,18 +466,22 @@ function updateFrontmatter(content, field, value) {
   let frontmatter = match[1];
   const fieldRegex = new RegExp(`${field}:.*`, 'g');
 
-  // Format value
+  // Format value - escape quotes properly
   let formattedValue = value;
   if (Array.isArray(value)) {
-    formattedValue = `[${value.join(', ')}]`;
-  } else if (typeof value === 'string' && value.includes(':')) {
-    formattedValue = `"${value}"`;
+    formattedValue = `[${value.map((v) => (typeof v === 'string' && (v.includes(':') || v.includes('"')) ? `"${v.replace(/"/g, '\\"')}"` : v)).join(', ')}]`;
+  } else if (typeof value === 'string') {
+    // Escape quotes and wrap if contains special chars
+    if (value.includes('"') || value.includes(':') || value.includes('#')) {
+      formattedValue = `"${value.replace(/"/g, '\\"')}"`;
+    }
   }
 
   if (frontmatter.match(fieldRegex)) {
     frontmatter = frontmatter.replace(fieldRegex, `${field}: ${formattedValue}`);
   } else {
-    frontmatter = frontmatter.replace('---', `${field}: ${formattedValue}\n---`);
+    // Insert new field before the closing --- (at correct position)
+    frontmatter = frontmatter.replace(/\n---$/, `\n${field}: ${formattedValue}\n---`);
   }
 
   return content.replace(match[1], frontmatter);

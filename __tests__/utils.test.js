@@ -78,10 +78,10 @@ describe('Utils Module', () => {
       expect(parseTime('1.25h')).toBe(1.25);
     });
 
-    test('parseTime should return 0 for invalid input', () => {
-      expect(parseTime('invalid')).toBe(0);
-      expect(parseTime('2x')).toBe(0);
-      expect(parseTime('')).toBe(0);
+    test('parseTime should return null for invalid input', () => {
+      expect(parseTime('invalid')).toBeNull();
+      expect(parseTime('2x')).toBeNull();
+      expect(parseTime('')).toBeNull();
     });
   });
 
