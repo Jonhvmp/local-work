@@ -8,7 +8,7 @@ module.exports = {
     // Lower thresholds account for openInEditor() and spawnEditor() which are
     // complex to unit test (requires mocking spawn, process events, platform detection)
     // Platform-specific logic (Windows/macOS/Linux) validated through E2E tests
-    // v3.1.0: Added sanitizePath() and spawnEditor() helper - adjusted thresholds
+    // v3.1.1: Added sanitizePath() and spawnEditor() helper - adjusted thresholds
     './cli/utils.js': {
       branches: 45,
       functions: 75,

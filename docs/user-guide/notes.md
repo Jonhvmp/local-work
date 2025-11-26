@@ -1,6 +1,6 @@
 # Note Taking
 
-Complete guide to taking notes with local-work v3.1.0.
+Complete guide to taking notes with local-work v3.1.1.
 
 ---
 

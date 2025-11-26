@@ -14,7 +14,7 @@ Guide for migrating from local-work v2.x to v3.x.
 - **Better templates** - Updated note and task templates with richer metadata
 - **Time tracking** - Built-in time estimation and tracking for tasks
 - **Statistics** - Task statistics with `task stats` command
-- **Standup Reports** - Generate daily/weekly standup reports (v3.1.0+)
+- **Standup Reports** - Generate daily/weekly standup reports (v3.1.1+)
 
 ---
 
