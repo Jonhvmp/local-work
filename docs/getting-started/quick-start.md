@@ -399,6 +399,41 @@ Searching for: "sprint"
 
 ---
 
+## :material-clipboard-text: Standup Reports
+
+Generate standup reports for team meetings:
+
+```bash
+task standup
+```
+
+**Output:**
+
+```
+[T] Standup Report
+Generated: 07/11/2025
+
+-> What I worked on yesterday:
+  • TASK-001: Implement user authentication (completed)
+
+-> What I'm working on today:
+  • TASK-002: Add OAuth support (active, high priority)
+
+-> Blockers / Issues:
+  No blockers
+```
+
+**Formats:**
+
+```bash
+task standup                      # Text (default)
+task standup --format markdown    # For Slack/Teams
+task standup --format json        # For integrations
+task standup --weekly             # Weekly summary
+```
+
+---
+
 ## :material-chart-bar: Statistics
 
 View task statistics:

@@ -1,6 +1,6 @@
 # Task CLI Reference
 
-Complete reference for all task commands in local-work v3.0.2.
+Complete reference for all task commands in local-work v3.1.0.
 
 ---
 
@@ -461,6 +461,105 @@ Total Tasks: 28
 
 ---
 
+## :material-clipboard-text: task standup
+
+Generate standup reports with yesterday's completed work, today's tasks, and blockers.
+
+### Syntax
+
+```bash
+task [-g] standup [--weekly] [--format <format>]
+```
+
+### Parameters
+
+| Parameter        | Type   | Required | Description                                         |
+| ---------------- | ------ | -------- | --------------------------------------------------- |
+| `--weekly`, `-w` | flag   | No       | Generate weekly summary instead of daily            |
+| `--format`, `-f` | string | No       | Output format: `text` (default), `markdown`, `json` |
+| `-g, --global`   | flag   | No       | Use global workspace                                |
+
+### Examples
+
+```bash
+# Daily standup (default text format)
+task standup
+
+# Weekly summary
+task standup --weekly
+task standup -w
+
+# Markdown format (great for Slack/Teams)
+task standup --format markdown
+task standup -f markdown
+
+# JSON format (for integrations)
+task standup --format json
+
+# Global workspace
+task -g standup
+```
+
+### Output (Text)
+
+```
+[T] Standup Report
+Generated: 26/11/2025
+
+-> What I worked on yesterday:
+  • TASK-042: Fix authentication bug (completed)
+  • TASK-041: Update user docs (completed)
+
+-> What I'm working on today:
+  • TASK-045: Implement OAuth2 (active, high priority)
+  • TASK-044: Add unit tests (active, medium priority)
+
+-> Blockers / Issues:
+  • TASK-050: Waiting for API access (backlog, high priority)
+```
+
+### Output (Markdown)
+
+```markdown
+## 📋 Standup Report
+
+**Generated:** 26/11/2025
+
+### ✅ What I worked on yesterday
+
+- TASK-042: Fix authentication bug
+- TASK-041: Update user docs
+
+### 🔄 What I'm working on today
+
+- **TASK-045**: Implement OAuth2 _(high)_
+- **TASK-044**: Add unit tests _(medium)_
+
+### ⚠️ Blockers / Issues
+
+- **TASK-050**: Waiting for API access _(high)_
+```
+
+### Output (Weekly Summary)
+
+```
+[T] Weekly Summary
+Week 48 (25/11/2025 - 01/12/2025)
+
+Completed this week: 8 tasks
+  • TASK-042: Fix authentication bug
+  • TASK-041: Update user docs
+  ...
+
+Currently active: 3 tasks
+  • TASK-045: Implement OAuth2
+  ...
+
+Backlog: 5 tasks
+```
+
+---
+
 ## :material-archive: task archive
 
 Archive old completed tasks.
@@ -512,7 +611,7 @@ task config show
 **Output:**
 
 ```
-Configuration (v3.0.2):
+Configuration (v3.1.0):
 
 Platform: linux
 Config Dir: /home/user/.config/local-work

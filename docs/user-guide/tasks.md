@@ -1,6 +1,6 @@
 # Task Management
 
-Complete guide to managing tasks with local-work v3.0.2.
+Complete guide to managing tasks with local-work v3.1.0.
 
 ---
 
@@ -397,6 +397,100 @@ Total Tasks: 28
 
 ---
 
+## :material-clipboard-text: Standup Reports
+
+Generate reports for daily standups or weekly summaries. Perfect for team meetings, Slack updates, or personal tracking.
+
+### Daily Standup
+
+```bash
+task standup
+```
+
+**Output:**
+
+```
+[T] Standup Report
+Generated: 26/11/2025
+
+-> What I worked on yesterday:
+  • TASK-042: Fix authentication bug (completed)
+  • TASK-041: Update user docs (completed)
+
+-> What I'm working on today:
+  • TASK-045: Implement OAuth2 (active, high priority)
+  • TASK-044: Add unit tests (active, medium priority)
+
+-> Blockers / Issues:
+  • TASK-050: Waiting for API access (backlog, high priority)
+```
+
+### Output Formats
+
+Choose the format that works best for your workflow:
+
+```bash
+task standup                      # Text (default)
+task standup --format markdown    # Markdown (Slack, Teams, docs)
+task standup --format json        # JSON (integrations, scripts)
+```
+
+**Markdown output** is great for pasting in Slack or Teams:
+
+```markdown
+## 📋 Standup Report
+
+**Generated:** 26/11/2025
+
+### ✅ What I worked on yesterday
+
+- TASK-042: Fix authentication bug
+- TASK-041: Update user docs
+
+### 🔄 What I'm working on today
+
+- **TASK-045**: Implement OAuth2 _(high)_
+
+### ⚠️ Blockers / Issues
+
+- **TASK-050**: Waiting for API access _(high)_
+```
+
+### Weekly Summary
+
+Get a summary of the entire week:
+
+```bash
+task standup --weekly
+task standup -w
+```
+
+**Output:**
+
+```
+[T] Weekly Summary
+Week 48 (25/11/2025 - 01/12/2025)
+
+Completed this week: 8 tasks
+  • TASK-042: Fix authentication bug
+  • TASK-041: Update user docs
+  ...
+
+Currently active: 3 tasks
+Backlog: 5 tasks
+```
+
+### Global Workspace
+
+Use standup with global tasks:
+
+```bash
+task -g standup
+task -g standup --weekly
+```
+
+---
+
 ## :material-archive: Archiving Tasks
 
 ### Auto-Archive Old Tasks
@@ -600,7 +694,10 @@ task update TASK-003 tags docs,readme
 ### Daily Workflow
 
 ```bash
-# Morning: Check active tasks
+# Morning: Generate standup for meeting
+task standup
+
+# Check active tasks
 task list active
 
 # Start working on a task

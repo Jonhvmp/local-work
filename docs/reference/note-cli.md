@@ -1,6 +1,6 @@
 # Note CLI Reference
 
-Complete reference for all note commands in local-work v3.0.2.
+Complete reference for all note commands in local-work v3.1.0.
 
 ---
 
@@ -557,7 +557,7 @@ note config show
 **Output:**
 
 ```
-Configuration (v3.0.2):
+Configuration (v3.1.0):
 
 Platform: linux
 Config Dir: /home/user/.config/local-work

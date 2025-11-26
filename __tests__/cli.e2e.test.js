@@ -31,14 +31,15 @@ describe('CLI E2E Tests', () => {
   describe('Task CLI Commands', () => {
     const taskBin = path.join(__dirname, '../bin/task.js');
 
-    test('task command without arguments should show help', () => {
+    test('task command without arguments should show stats or help', () => {
       try {
         const output = execSync(`node ${taskBin}`, { encoding: 'utf-8' });
-        expect(output).toContain('Task Management CLI');
-        expect(output).toContain('Usage:');
+        // v3.1.0+ shows stats by default when no command given
+        expect(output).toContain('Task Statistics');
       } catch (error) {
-        // Help output might exit with code 0 or 1 depending on implementation
-        expect(error.stdout || error.stderr).toContain('Task Management');
+        // May also show help or require initialization
+        const errorOutput = error.stdout || error.stderr || '';
+        expect(errorOutput).toMatch(/Task|Usage:|init/);
       }
     });
 
@@ -149,8 +150,9 @@ describe('CLI E2E Tests', () => {
       const taskContent = fs.readFileSync(taskBin, 'utf-8');
       const noteContent = fs.readFileSync(noteBin, 'utf-8');
 
-      expect(taskContent).toContain("require('../cli/task.js')");
-      expect(noteContent).toContain("require('../cli/note.js')");
+      // v3.1.0+ uses modular CLI structure
+      expect(taskContent).toContain("require('../cli/task/cli')");
+      expect(noteContent).toContain("require('../cli/note/cli')");
     });
 
     test('CLI modules should be in correct location', () => {

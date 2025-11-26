@@ -51,5 +51,5 @@ config/local.json
 # Python ignore
 venv/
 
-# Serena
+.venv
 .serena/

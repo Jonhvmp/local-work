@@ -1,8 +1,8 @@
 # local-work
 
-**Professional CLI toolkit for task and note management v3.0.2**
+**Professional CLI toolkit for task and note management v3.1.0**
 
-Streamline your development workflow with organized tasks, daily notes, and meeting logs—all from your terminal.
+Streamline your development workflow with organized tasks, daily notes, standup reports, and meeting logs—all from your terminal.
 
 [![npm version](https://img.shields.io/npm/v/local-work.svg)](https://www.npmjs.com/package/local-work)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jonhvmp/local-work/blob/main/LICENSE)
@@ -42,6 +42,7 @@ note meeting "Sprint Planning"
 - **Status Workflow** - backlog → active → completed → archived
 - **Priority System** - low, medium, high with color coding
 - **Time Tracking** - Estimated vs actual time with variance analysis
+- **Standup Reports** - Generate daily/weekly standup reports (text, markdown, JSON)
 - **Full-text Search** - Find tasks across all fields
 
 ### Note Taking
@@ -51,7 +52,7 @@ note meeting "Sprint Planning"
 - **Technical Decisions** - Architecture Decision Records (ADRs)
 - **Learning Notes** - Today I Learned (TIL) documentation
 
-### Project-Aware (v3.0.2)
+### Project-Aware (v3.1.0)
 
 - **Git-like Model** - Local workspace (.local-work/) or global workspace
 - **Auto-detection** - Works from any subdirectory in your project
