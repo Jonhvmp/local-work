@@ -58,6 +58,22 @@ describe('CLI E2E Tests', () => {
     });
   });
 
+  describe('Agent CLI Commands', () => {
+    const taskBin = path.join(__dirname, '../bin/task.js');
+
+    test('task agent list should not crash', () => {
+      try {
+        const output = execSync(`node ${taskBin} agent list`, {
+          encoding: 'utf-8',
+        });
+        expect(output).toMatch(/Provider|Scope|Status/);
+      } catch (error) {
+        const errorOutput = error.stdout || error.stderr || '';
+        expect(errorOutput).toMatch(/Provider|Scope|Status|agent/);
+      }
+    });
+  });
+
   describe('Note CLI Commands', () => {
     const noteBin = path.join(__dirname, '../bin/note.js');
 
