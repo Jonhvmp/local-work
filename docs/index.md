@@ -8,6 +8,7 @@ Streamline your development workflow with organized tasks, daily notes, standup 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jonhvmp/local-work/blob/main/LICENSE)
 [![Tests](https://img.shields.io/badge/tests-143%20passing-brightgreen.svg)](https://github.com/jonhvmp/local-work)
 [![Portfolio](https://img.shields.io/badge/portfolio-Jonh%20Alex%20portfolio-black.svg)](https://jonhvmp.vercel.app)
+[![Landing](https://img.shields.io/badge/landing-blue.svg)](https://localwork.vercel.app)
 
 ---
 
@@ -54,10 +55,16 @@ note meeting "Sprint Planning"
 
 ### Project-Aware (v3.1.1)
 
-- **Git-like Model** - Local workspace (.local-work/) or global workspace
+- **Git-like Model** - Local workspace (.local-work/) or global workspace       
 - **Auto-detection** - Works from any subdirectory in your project
 - **Global Flag** - Use `-g` or `--global` to access global workspace
 - **Zero Config** - Works out of the box with sensible defaults
+
+### Agent Integration
+
+- **Provider Support** - Claude, Copilot, Gemini, OpenAI
+- **Two Scopes** - Global (home) or workspace (project)
+- **Local Templates** - Uses markdown instructions and templates
 
 ### Cross-Platform
 
