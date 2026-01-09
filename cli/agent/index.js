@@ -2,7 +2,16 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 const config = require('../config');
-const { success, warning, dim, bold, icons, info, formatTable, parseFrontmatter } = require('../utils');
+const {
+  success,
+  warning,
+  dim,
+  bold,
+  icons,
+  info,
+  formatTable,
+  parseFrontmatter,
+} = require('../utils');
 const ClaudeProvider = require('./providers/claude');
 const CopilotProvider = require('./providers/copilot');
 const GeminiProvider = require('./providers/gemini');
@@ -170,18 +179,18 @@ class AgentManager {
           'Enter choice (default: 1): ',
         ].join('\n'),
         (answer) => {
-        rl.close();
-        const value = answer.trim().toLowerCase();
-        if (!value || value === '1' || value === 'global' || value === 'g') {
-          resolve('global');
-          return;
+          rl.close();
+          const value = answer.trim().toLowerCase();
+          if (!value || value === '1' || value === 'global' || value === 'g') {
+            resolve('global');
+            return;
+          }
+          if (value === '2' || value === 'workspace' || value === 'w' || value === 'local') {
+            resolve('workspace');
+            return;
+          }
+          reject(new Error('Invalid selection. Use "global" or "workspace".'));
         }
-        if (value === '2' || value === 'workspace' || value === 'w' || value === 'local') {
-          resolve('workspace');
-          return;
-        }
-        reject(new Error('Invalid selection. Use "global" or "workspace".'));
-      }
       );
     });
   }

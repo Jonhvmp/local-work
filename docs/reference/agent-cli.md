@@ -18,10 +18,12 @@ task agent setup --provider <name> [--global|--workspace]
 ```
 
 **Defaults**
+
 - Provider: `claude`
 - Scope: interactive prompt (default is global)
 
 **Examples**
+
 ```bash
 # Default provider (claude), prompt for scope
 task agent setup
