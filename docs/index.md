@@ -1,6 +1,6 @@
 # local-work
 
-**Professional CLI toolkit for task and note management v3.1.1**
+**Professional CLI toolkit for task and note management v3.2.0**
 
 Streamline your development workflow with organized tasks, daily notes, standup reports, and meeting logs—all from your terminal.
 
@@ -53,9 +53,9 @@ note meeting "Sprint Planning"
 - **Technical Decisions** - Architecture Decision Records (ADRs)
 - **Learning Notes** - Today I Learned (TIL) documentation
 
-### Project-Aware (v3.1.1)
+### Project-Aware (v3.2.0)
 
-- **Git-like Model** - Local workspace (.local-work/) or global workspace       
+- **Git-like Model** - Local workspace (.local-work/) or global workspace
 - **Auto-detection** - Works from any subdirectory in your project
 - **Global Flag** - Use `-g` or `--global` to access global workspace
 - **Zero Config** - Works out of the box with sensible defaults
