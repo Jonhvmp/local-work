@@ -898,7 +898,7 @@ Subtasks:
 
 # 🔄 Version & Compatibility
 
-**CLI Version**: local-work v3.2.0
+**CLI Version**: local-work v3.2.1
 **Compatibility Check**: Always verify with `task config show`
 **Update Protocol**: If version differs, warn about possible breaking changes
 
