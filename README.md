@@ -18,7 +18,7 @@
 ## Features
 
 ✨ **Task Management** - Auto-incrementing IDs, status workflow, priorities, time tracking <br/>
-📋 **Standup Reports** - Generate daily/weekly standups in text, markdown, or JSON  <br/>
+📋 **Standup Reports** - Generate daily/weekly standups in text, markdown, or JSON <br/>
 📓 **Note Taking** - Daily notes, meeting logs, technical decisions, learning notes <br/>
 🚀 **Project-Aware** - Works from any subdirectory, detects project root automatically <br/>
 🔧 **Zero Config** - Works out of the box with sensible defaults <br/>

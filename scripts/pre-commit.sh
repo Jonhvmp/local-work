@@ -19,12 +19,24 @@ NC='\033[0m' # No Color
 # Step 1: Format check and fix
 echo -e "${YELLOW}[1/5] Checking and fixing formatting...${NC}"
 npm run format
+# Add formatted files to staging area
+if ! git diff --quiet; then
+    echo -e "${YELLOW}Adding formatted files to staging area...${NC}"
+    git add -A
+    echo -e "${GREEN}✓ Formatted files staged${NC}"
+fi
 echo -e "${GREEN}✓ Formatting complete${NC}"
 echo ""
 
 # Step 2: Lint check and fix
 echo -e "${YELLOW}[2/5] Running linter...${NC}"
 npm run lint:fix
+# Add linted files to staging area
+if ! git diff --quiet; then
+    echo -e "${YELLOW}Adding linted files to staging area...${NC}"
+    git add -A
+    echo -e "${GREEN}✓ Linted files staged${NC}"
+fi
 echo -e "${GREEN}✓ Linting complete${NC}"
 echo ""
 
