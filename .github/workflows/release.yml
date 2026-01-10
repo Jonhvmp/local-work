@@ -102,7 +102,7 @@ jobs:
             ## Installation
 
             ```bash
-            npm install -g @jonhvmp/local-work-cli@${{ github.event.inputs.version }}
+            npm install -g local-work@${{ github.event.inputs.version }}
             ```
 
             ## Full Changelog

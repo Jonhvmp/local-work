@@ -1,6 +1,6 @@
 # Task Management
 
-Complete guide to managing tasks with local-work v3.2.1.
+Complete guide to managing tasks with local-work v3.2.2.
 
 ---
 

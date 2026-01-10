@@ -1,6 +1,6 @@
 # Task CLI Reference
 
-Complete reference for all task commands in local-work v3.2.1.
+Complete reference for all task commands in local-work v3.2.2.
 
 ---
 
@@ -611,7 +611,7 @@ task config show
 **Output:**
 
 ```
-Configuration (v3.2.1):
+Configuration (v3.2.2):
 
 Platform: linux
 Config Dir: /home/user/.config/local-work
