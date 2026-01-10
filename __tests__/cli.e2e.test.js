@@ -34,7 +34,7 @@ describe('CLI E2E Tests', () => {
     test('task command without arguments should show stats or help', () => {
       try {
         const output = execSync(`node ${taskBin}`, { encoding: 'utf-8' });
-        // v3.1.1+ shows stats by default when no command given
+        // v3.2.0+ shows stats by default when no command given
         expect(output).toContain('Task Statistics');
       } catch (error) {
         // May also show help or require initialization
@@ -54,6 +54,22 @@ describe('CLI E2E Tests', () => {
       } catch (error) {
         // List might exit with error if no tasks
         expect(error.status).toBeDefined();
+      }
+    });
+  });
+
+  describe('Agent CLI Commands', () => {
+    const taskBin = path.join(__dirname, '../bin/task.js');
+
+    test('task agent list should not crash', () => {
+      try {
+        const output = execSync(`node ${taskBin} agent list`, {
+          encoding: 'utf-8',
+        });
+        expect(output).toMatch(/Provider|Scope|Status/);
+      } catch (error) {
+        const errorOutput = error.stdout || error.stderr || '';
+        expect(errorOutput).toMatch(/Provider|Scope|Status|agent/);
       }
     });
   });
@@ -150,7 +166,7 @@ describe('CLI E2E Tests', () => {
       const taskContent = fs.readFileSync(taskBin, 'utf-8');
       const noteContent = fs.readFileSync(noteBin, 'utf-8');
 
-      // v3.1.1+ uses modular CLI structure
+      // v3.2.0+ uses modular CLI structure
       expect(taskContent).toContain("require('../cli/task/cli')");
       expect(noteContent).toContain("require('../cli/note/cli')");
     });

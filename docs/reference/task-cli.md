@@ -1,6 +1,6 @@
 # Task CLI Reference
 
-Complete reference for all task commands in local-work v3.1.1.
+Complete reference for all task commands in local-work v3.2.0.
 
 ---
 
@@ -611,7 +611,7 @@ task config show
 **Output:**
 
 ```
-Configuration (v3.1.1):
+Configuration (v3.2.0):
 
 Platform: linux
 Config Dir: /home/user/.config/local-work
@@ -803,3 +803,4 @@ Shows complete usage information with all commands, examples, and options.
 - [Task Management Guide](../user-guide/tasks.md) - Complete task workflow
 - [Configuration](../getting-started/configuration.md) - Configure preferences
 - [Quick Start](../getting-started/quick-start.md) - Getting started guide
+- [Agent CLI](agent-cli.md) - Agent integration commands

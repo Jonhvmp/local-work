@@ -9,6 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.18.0-brightgreen.svg)](https://nodejs.org)
 [![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://jonhvmp.github.io/local-work)
+[![Agent Integration](https://img.shields.io/badge/agents-claude%20%7C%20copilot%20%7C%20gemini%20%7C%20openai-orange.svg)](https://jonhvmp.github.io/local-work/reference/agent-cli/)
 
 > Professional CLI toolkit for task and note management. Streamline your development workflow with organized tasks, daily notes, and meeting logs—all from your terminal.
 
@@ -22,6 +23,7 @@
 🚀 **Project-Aware** - Works from any subdirectory, detects project root automatically
 🔧 **Zero Config** - Works out of the box with sensible defaults
 🌍 **Cross-Platform** - Linux, macOS, and Windows support
+🤖 **Agent Integration** - Generate provider agents (Claude, Copilot, Gemini, OpenAI) from templates
 
 ## Quick Start
 
@@ -69,6 +71,26 @@ note meeting "Sprint Planning"
 # Technical decision
 note tech "Migration to TypeScript"
 ```
+
+## 🤖 Agent Integration
+
+Local-work can generate provider agents from Markdown templates for popular LLM clients.
+
+```bash
+# Setup agent (default provider: claude)
+task agent setup
+
+# Setup for a specific provider
+task agent setup --provider claude
+
+# List agent files
+task agent list
+
+# Validate agent file
+task agent test --provider claude
+```
+
+Docs: [Agent CLI Reference](./docs/reference/agent-cli.md)
 
 ## Documentation
 

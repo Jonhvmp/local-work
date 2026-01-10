@@ -29,8 +29,9 @@ ${info('Usage:')}
   task [-g] list [dir]                          List tasks in directory
   task [-g] search <term>                       Search tasks by term
   task [-g] stats [dir]                         Show task statistics
-  task [-g] standup [--weekly] [--format=FORMAT]  Generate standup report
+  task [-g] standup [--weekly] [--format=FORMAT]  Generate standup report       
   task [-g] config <command>                    Manage configuration
+  task agent <command>                          Manage agent integration
   task [-g] open                                Open tasks directory
 
 ${info('Workspace Model (Git-like):')}
@@ -58,6 +59,15 @@ ${info('Examples:')}
   task standup
   task -g create "Global task"                  # Use global workspace
   task config show
+  task agent setup --provider claude
+  task agent list
+  task agent test --provider claude
+
+${info('Agent Commands:')}
+  task agent setup [provider] [--global|--workspace]
+  task agent setup --provider <name> [--global|--workspace]
+  task agent list
+  task agent test [provider] [--global|--workspace]
 
 ${info('Directories:')} backlog, active, completed, archived
 `;
@@ -427,6 +437,78 @@ function handleAutoArchive(args, getTasksDir) {
   task.archiveOldTasks(getTasksDir, days);
 }
 
+/**
+ * Get value for a flag like --provider or --provider=value
+ * @param {string[]} args
+ * @param {string} flag
+ * @returns {string|undefined}
+ */
+function getFlagValue(args, flag) {
+  const direct = args.find((arg) => arg.startsWith(`${flag}=`));
+  if (direct) {
+    return direct.split('=').slice(1).join('=');
+  }
+  const index = args.indexOf(flag);
+  if (index !== -1 && args[index + 1] && !args[index + 1].startsWith('-')) {
+    return args[index + 1];
+  }
+  return undefined;
+}
+
+/**
+ * Parse agent options from args
+ * @param {string[]} args
+ * @param {boolean} useGlobal
+ */
+function parseAgentOptions(args, useGlobal) {
+  const useWorkspace = args.includes('-w') || args.includes('--workspace');
+  const providerFromFlag = getFlagValue(args, '--provider');
+  const providerFromPositional = args[2] && !args[2].startsWith('-') ? args[2] : undefined;
+  const provider = providerFromFlag || providerFromPositional;
+
+  return {
+    provider,
+    useGlobal,
+    useWorkspace,
+  };
+}
+
+/**
+ * Handle 'agent' command
+ * @param {string[]} args
+ * @param {boolean} useGlobal
+ */
+async function handleAgent(args, useGlobal) {
+  const subcommand = args[1];
+  const AgentManager = require('../agent');
+  const manager = new AgentManager();
+  const options = parseAgentOptions(args, useGlobal);
+
+  switch (subcommand) {
+    case 'setup':
+      await manager.setup(options.provider, options);
+      break;
+    case 'list':
+      await manager.list();
+      break;
+    case 'test':
+      await manager.test(options.provider, options);
+      break;
+    default:
+      console.log(
+        [
+          '',
+          'Usage:',
+          '  task agent setup [provider] [--global|--workspace]',
+          '  task agent setup --provider <name> [--global|--workspace]',
+          '  task agent list',
+          '  task agent test [provider] [--global|--workspace]',
+          '',
+        ].join('\n')
+      );
+  }
+}
+
 // ============================================================================
 // Main CLI Entry Point
 // ============================================================================
@@ -446,6 +528,11 @@ async function run(argv = process.argv) {
   const cleanArgs = argv.filter((arg) => arg !== '-g' && arg !== '--global');
   const args = cleanArgs.slice(2);
   const command = args[0];
+
+  if (command === 'agent') {
+    await handleAgent(args, useGlobal);
+    return;
+  }
 
   // Get tasks directory as string
   const tasksDirPath = getTasksDirPath(useGlobal, command);

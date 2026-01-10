@@ -80,7 +80,7 @@ The `config.json` file contains:
 
 ```json
 {
-  "version": "3.1.1",
+  "version": "3.2.0",
   "global": {
     "tasksDir": "/home/user/.local/share/local-work/tasks",
     "notesDir": "/home/user/.local/share/local-work/notes"
@@ -133,7 +133,7 @@ task config show
 Output example:
 
 ```
-Configuration (v3.1.1):
+Configuration (v3.2.0):
 
 Platform: linux
 Config Dir: /home/user/.config/local-work
