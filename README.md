@@ -17,13 +17,13 @@
 
 ## Features
 
-✨ **Task Management** - Auto-incrementing IDs, status workflow, priorities, time tracking
-📋 **Standup Reports** - Generate daily/weekly standups in text, markdown, or JSON
-📓 **Note Taking** - Daily notes, meeting logs, technical decisions, learning notes
-🚀 **Project-Aware** - Works from any subdirectory, detects project root automatically
-🔧 **Zero Config** - Works out of the box with sensible defaults
-🌍 **Cross-Platform** - Linux, macOS, and Windows support
-🤖 **Agent Integration** - Generate provider agents (Claude, Copilot, Gemini, OpenAI) from templates
+✨ **Task Management** - Auto-incrementing IDs, status workflow, priorities, time tracking <br/>
+📋 **Standup Reports** - Generate daily/weekly standups in text, markdown, or JSON  <br/>
+📓 **Note Taking** - Daily notes, meeting logs, technical decisions, learning notes <br/>
+🚀 **Project-Aware** - Works from any subdirectory, detects project root automatically <br/>
+🔧 **Zero Config** - Works out of the box with sensible defaults <br/>
+🌍 **Cross-Platform** - Linux, macOS, and Windows support <br/>
+🤖 **Agent Integration** - Generate provider agents (Claude, Copilot, Gemini, OpenAI) from templates <br/>
 
 ## Quick Start
 
