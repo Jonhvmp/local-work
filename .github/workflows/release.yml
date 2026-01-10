@@ -43,7 +43,21 @@ jobs:
       - name: Run linter
         run: npm run lint
 
+      - name: Resolve version
+        id: version
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          INPUT_VERSION="${{ github.event.inputs.version }}"
+          echo "current=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "input=$INPUT_VERSION" >> $GITHUB_OUTPUT
+          if [ "$CURRENT_VERSION" = "$INPUT_VERSION" ]; then
+            echo "needs_bump=false" >> $GITHUB_OUTPUT
+          else
+            echo "needs_bump=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Update version in package.json
+        if: steps.version.outputs.needs_bump == 'true'
         run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
 
       - name: Generate changelog
@@ -60,15 +74,20 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Commit version bump
+        if: steps.version.outputs.needs_bump == 'true'
         run: |
-          git add package.json
+          git add package.json package-lock.json
           git commit -m "chore: bump version to ${{ github.event.inputs.version }}"
           git push origin main
 
       - name: Create and push tag
         run: |
-          git tag -a "v${{ github.event.inputs.version }}" -m "Release v${{ github.event.inputs.version }}"
-          git push origin "v${{ github.event.inputs.version }}"
+          if git rev-parse "v${{ github.event.inputs.version }}" >/dev/null 2>&1; then
+            echo "Tag v${{ github.event.inputs.version }} already exists. Skipping tag creation."
+          else
+            git tag -a "v${{ github.event.inputs.version }}" -m "Release v${{ github.event.inputs.version }}"
+            git push origin "v${{ github.event.inputs.version }}"
+          fi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -83,7 +102,7 @@ jobs:
             ## Installation
 
             ```bash
-            npm install -g @jonhvmp/local-work-cli@${{ github.event.inputs.version }}
+            npm install -g local-work@${{ github.event.inputs.version }}
             ```
 
             ## Full Changelog
